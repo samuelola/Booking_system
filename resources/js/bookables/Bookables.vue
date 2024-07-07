@@ -1,28 +1,24 @@
 <template>
     <div>
         <div v-if="loading">
-            Data is Loading.....
-         </div>
-         
-         <div v-else>
-            <div class="row mb-4" v-for="row in rows" :key="'row' + row">
-                <div class="col" v-for="(bookable, column) in bookablesInRow(row)"
+              <div class="row mb-4" v-for="row in rows" :key="'row' + row">
+                <div class="col d-flex align-items-stretch" v-for="(bookable, column) in bookablesInRow(row)"
                  :key="'row' + row + column"
                 >
 
                   <BookableListItem
-                  :item-title="bookable.title"
-                  :item-content="bookable.content"
-                  :price="bookable.price"
+                  v-bind="bookable"
                    ></BookableListItem>
                     
                 </div>
                   <div class = "col" v-for="p in placeholdersInRow(row)" :key="'placeholder' + row + p"></div>
                   
             </div>
-            
-            
-            
+         </div>
+         
+         <div v-else>
+             Data is Loading.....
+           
          </div>
     
     </div>
@@ -54,63 +50,23 @@ export default {
          return this.bookables.slice((row - 1) * this.columns, row * this.columns);
       },
 
+      //this  function you to adjust the last item to be in a single column
       placeholdersInRow(row){
          return this.columns - this.bookablesInRow(row).length;
       }
     
     },
     created() {
-        this.loading = true;
-        setTimeout(()=>{
-           this.bookables= [
-           
-           {
-                title: "Cheap villa !!!",
-                content: "A very cheap villa",
-                price: 250,
-            },
-            
-            {
-                title: "Cheap villa 2",
-                content: "A very cheap villa 2",
-                price: 150,
-            },
+        
+        const request = axios.get('/api/bookables')
 
-            {
-                title: "Cheap villa 2",
-                content: "A very cheap villa 2",
-                price: 150,
-            },
+            .then(response => {
+                this.loading = 'true';
+                this.bookables = response.data.data;
+                //this.bookables.push({ title: "x", description: "x" });
+                
+            });
 
-            {
-                title: "Cheap villa 2",
-                content: "A very cheap villa 2",
-                price: 150,
-            },
-
-            {
-                title: "Cheap villa 2",
-                content: "A very cheap villa 2",
-                price: 150,
-            },
-
-            {
-                title: "Cheap villa 2",
-                content: "A very cheap villa 2",
-                price: 150,
-            },
-
-            {
-                title: "Cheap villa 2",
-                content: "A very cheap villa 2",
-                price: 150,
-            },
-
-            ];
-
-            this.loading = false;
-           
-        },2000);
     },
 };
 </script>
