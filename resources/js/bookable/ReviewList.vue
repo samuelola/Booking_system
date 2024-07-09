@@ -12,7 +12,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        {{ dateTime(review.created_at)}}
+                        {{ $filters.dateTime(review.created_at)}}
                     </div>
                 </div>
                 <div class="row pt-4 pb-4">
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import moment from 'moment';
+
 export default {
     props: {
         bookableId : String
@@ -50,13 +50,7 @@ export default {
             
     },
 
-    methods: {
-        dateTime(value) {
-            return moment(value).startOf('day').fromNow();
-        }
-    }
-        
-    
+  
     
 }
 
