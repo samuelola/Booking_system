@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Review;
-use App\Http\Resource\ReviewResource;
+use App\Http\Resources\ReviewResource;
 
 class ReviewController extends Controller
 {

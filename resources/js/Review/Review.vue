@@ -1,6 +1,15 @@
 <template>
     <div>
-        <div class="container">
+        <div v-if="loading">
+            Loading...
+        </div>
+        <div v-else>
+            <div v-if="alreadyReviewed">
+           <h3 class="text-center">You have already left a review for this booking</h3>
+        </div>
+        <div v-else>
+
+          <div class="container">
             <div class="row">
                 <div class="col-md-2"></div>
                 <div class="col-md-8">
@@ -21,24 +30,50 @@
                 </div> 
                 <div class="col-md-2"></div>
             </div>
+          </div>
         </div>
+        </div>
+        
+       
     </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
 
     data() {
         return {
             review: {
                 ratingg: 5,
-                content:null
-           } 
+                content: null
+            },
+            existingReview: null,
+            loading:false
         }
     },
-    
+
     created() {
-        
+            this.loading = true;
+            axios.get(`/api/reviews/${this.$route.params.id}`)
+            .then(response => {
+                this.existingReview = response.data.data
+            })
+            .catch(err => {
+
+            })
+            .then(() => {
+                this.loading=false
+            }); 
+
+
+    },
+
+    computed: {
+        alreadyReviewed() {
+            return this.existingReview != null;
+        }
     }
 }
 </script>
