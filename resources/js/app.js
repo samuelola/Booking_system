@@ -24,7 +24,7 @@ app.component('star-rating', StarRating)
 //this register a function globally
 app.config.globalProperties.$filters = {
   dateTime(value) {
-    return moment(value).startOf('day').fromNow();
+    return moment(value).fromNow();
   }
 }
 app.use(router)
