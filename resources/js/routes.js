@@ -13,7 +13,6 @@ const routes = [
         name : "bookables"
 
     },
-
     {
 
         path: "/bookable/:id",
@@ -21,7 +20,6 @@ const routes = [
         name : "bookable"
 
     },
-    
     {
 
         path: "/review/:id",
@@ -29,6 +27,7 @@ const routes = [
         name : "review"
 
     },
+    
    
 ];
 

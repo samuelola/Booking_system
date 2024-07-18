@@ -12,7 +12,8 @@
              @keyup.enter="check"
              :class="[{'is-invalid': this.errorFor('from')}]"
              >
-              <div class="invalid-feedback" v-for="(error,index) in this.errorFor('from')" :key="'from' + index">{{ error }}</div>
+              <!--<div class="invalid-feedback" v-for="(error,index) in this.errorFor('from')" :key="'from' + index">{{ error }}</div>-->
+              <validation-error :errors="errorFor('from')"></validation-error>
          </div>
          <div class="form-group col-md-6">
             <label for="to">To</label>
@@ -21,7 +22,9 @@
             @keyup.enter="check"
             :class="[{'is-invalid': this.errorFor('to')}]"
             >
-            <div class="invalid-feedback" v-for="(error,index) in this.errorFor('to')" :key="'to' + index">{{ error }}</div>
+             <!--<div class="invalid-feedback" v-for="(error,index) in this.errorFor('to')" :key="'to' + index">{{ error }}</div>-->
+            <validation-error :errors="errorFor('to')"></validation-error>
+           
          </div>
       </div>
       <button class="btn btn-secondary mt-2 w-100" @click="check" :disabled="loading">Check</button>
@@ -29,7 +32,10 @@
 </template>
 
 <script>
+import { is422 } from '../shared/Utils/response';
+import validation_errorss from '../shared/mixins/ValidationErrors';
 export default {
+    mixins: [validation_errorss],
     props: {
         bookableId : String
     },
@@ -39,7 +45,7 @@ export default {
             to: null,
             loading: false,
             status: null,
-            errors : null
+            // errors : null
         }
     },
 
@@ -52,7 +58,7 @@ export default {
                     this.status = response.status
                 })
                 .catch(error => {
-                    if (422 == error.response.status) {
+                    if (is422(error)) {
                         this.errors = error.response.data.errors;
                     }
 
@@ -61,9 +67,9 @@ export default {
                 .then(() => (this.loading = false));
         },
 
-        errorFor(field) {
-            return this.hasErrors && this.errors[field] ? this.errors[field] : null;
-        }
+        // errorFor(field) {
+        //     return this.hasErrors && this.errors[field] ? this.errors[field] : null;
+        // }
     },
 
     computed: {

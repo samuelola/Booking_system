@@ -11,7 +11,8 @@ use App\Http\Resources\ReviewResource;
 class ReviewController extends Controller
 {
     public function show($id){
-        return new ReviewResource(Review::findOrFail($id));
+        $review = Review::where('uuid',$id)->first();
+        return $review ? new ReviewResource($review) : abort(404);
     }
 
     public function store(Request $request){

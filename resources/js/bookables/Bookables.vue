@@ -18,7 +18,6 @@
          
          <div v-else>
              Data is Loading.....
-           
          </div>
     
     </div>

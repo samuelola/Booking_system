@@ -19,7 +19,7 @@ class BookableIndexResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
-            'created_at' => $this->created_at->format('d/m/Y')
+            'created_at' => $this->created_at
         ];
     }
 }

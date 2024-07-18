@@ -1,7 +1,5 @@
 <template>
-    <success v-if="success"></success>
-    <div v-else>
-            <div class="row">
+    <div class="row">
         <!-- <fatal-error v-if="true"></fatal-error> -->
         <!-- <div :class="[{'col-md-4' : loading  ||  !alreadyReviewed},{'d-none': !loading && alreadyReviewed}]">First Column</div>
         <div :class="[{'col-md-8': loading || !alreadyReviewed},{'col-md-12' : !loading && alreadyReviewed}]"></div> -->
@@ -38,10 +36,10 @@
                         <div class="form-group">
                             <label for="content" class="text-muted">Describe you experience with</label>
                             <textarea :class="[{'is-invalid': this.errorFor('content')}]" name="content" cols="30" rows="10" v-model="review.content" class="form-control"></textarea>
-                            <!--reuse code here-->
-                            <validation-error :errors="errorFor('content')"></validation-error>
-                            <!--reuse code here-->
-                             
+
+                            <div>
+                                <div class="invalid-feedback" v-for="(error,index) in this.errorFor('content')" :key="'content' + index">{{ error }}</div>
+                            </div>  
 
                         </div>
                         <button class="btn btn-primary mt-2 w-100" @click.prevent="submit" :disabled="sending">Submit</button>
@@ -55,17 +53,14 @@
         
        
     </div>
-    </div>
-    
 </template>
 
 <script>
 import axios from 'axios';
-import { is404, is422, is500 } from '../shared/Utils/response';
-import validation_errorss from '../shared/mixins/ValidationErrors'
+import { is404,is422,is500 } from '../shared/Utils/response';
 
 export default {
-  mixins: [validation_errorss],
+
     data() {
         return {
             review: {
@@ -77,30 +72,35 @@ export default {
             loading: false,
             booking: null,
             error: false,
-            // errors: null,
-            sending: false,
-            success : false
+            errors: null,
+            sending:false
         }
     },
 
-   async created() {
-       this.review.uuid = this.$route.params.id;
-       this.loading = true;
-       try {
-          this.existingReview = (await axios.get(`/api/reviews/${this.review.uuid}`)).data.data;
-       } catch(err) {
-           if (is404(err)) {
+    created() {
+            this.review.uuid = this.$route.params.id;
+            this.loading = true;
+            axios.get(`/api/reviews/${this.review.uuid}`)
+            .then(response => {
+                this.existingReview = response.data.data
+            })
+                .catch(err => {
+                    if (is404(err)) {
+                        axios.get(`/api/booking-by-review/${this.review.uuid}`)
+                            .then(response => {
+                                this.booking = response.data.data;
+                            })
+                            .catch(err=>{
+                                
+                            });
 
-               this.booking = (await axios.get(`/api/booking-by-review/${this.review.uuid}`)).data.data;
-            
-         } else {
+                     }
 
-            this.error = true;
-          }
-
-           
-       }
-       this.loading = false; 
+                    this.error = true;
+            })
+            .then(() => {
+                this.loading=false
+            }); 
 
     },
 
@@ -118,59 +118,33 @@ export default {
     },
 
     methods: {
-   async submit() {
+        submit() {
             this.errors = null;
-            //this.sending = true;
-            this.success = false;
+            this.sending = true;
+            axios.post(`/api/reviews`, this.review)
+                .then(response => {
+                    console.log(response)
+                })
+                .catch(error => {
+                    if (is422(error)) {
+                        const errors = error.response.data.errors;
 
-            try {
-                this.success = (await axios.post(`/api/reviews`, this.review)).status;
-                if (this.success == 201) {
-                    this.success = true;
-                }
-            }
-            catch (error) {
-
-                if (is422(error)) {
-                    const errors = error.response.data.errors;
-                    if (errors["content"]) {
+                        if (errors["content"]) {
                             this.errors = errors;
                             return;
                         }
 
-                } else {
+                    }
+
                     this.error = true;
-                }
-                
-            }
-            // this.sending = false;
-
-            // axios.post(`/api/reviews`, this.review)
-            //     .then(response => {
-            //         if (response.status == 201) {
-            //             this.success = true;
-            //          }
-            //     })
-            //     .catch(error => {
-            //         if (is422(error)) {
-            //             const errors = error.response.data.errors;
-
-            //             if (errors["content"]) {
-            //                 this.errors = errors;
-            //                 return;
-            //             }
-
-            //         }
-
-            //         this.error = true;
-            //     })
-            //     .then(() => {
-            //         this.sending = false;
-            //     });
+                })
+                .then(() => {
+                    this.sending = false;
+                });
         },
-        // errorFor(field) {
-        //     return this.errors != null && this.errors[field] ? this.errors[field] : null;
-        // }
+        errorFor(field) {
+            return this.errors != null && this.errors[field] ? this.errors[field] : null;
+        }
     }
 }
 </script>
@@ -179,5 +153,7 @@ export default {
    .review_link{
      text-decoration: none !important;
    }
-   
+   .form-control.is-invalid ~ div > .invalid-feedback{
+      display:block;
+   }
 </style>

@@ -1,5 +1,9 @@
 <template>
     <div style="padding: 1.25rem;">
+        
+        <router-link class="btn btn-sm btn-primary" :to="{name:'review', params:{id:review_key}}">
+                Create a review
+            </router-link>
         <h6 class="text-uppcase text-secondary font-weight-bolder pt-4">Review List</h6>
         <div v-if="loading">
              <div class="border-bottom d-none d-md-block" v-for="(review, index) in reviews" :key="index">
@@ -36,7 +40,8 @@ export default {
     data() {
         return {
             loading: false,
-            reviews : null
+            reviews: null,
+            review_key : null
         }
     },
 
@@ -45,11 +50,21 @@ export default {
             .then(response => {
                 this.loading = 'true';
                 this.reviews = response.data.data 
-                
-            });
-            
+                //console.log(this.reviews);
+            });    
+     
     },
 
+    mounted() {
+
+        axios.get(`/api/booking-by/${this.bookableId}`)
+            .then(response => {
+                this.review_key = response.data.data.review 
+                console.log(this.review_key);
+            });  
+    }
+
+    
   
     
 }
