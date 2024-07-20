@@ -14,9 +14,12 @@ class BookingByIdReviewController extends Controller
      */
     public function __invoke(Request $request,$id)
     {
-        return new BookingByIdResource(Booking::where('bookable_id',$id)->orderBy('id','desc')->first());
-
-
-        
+        $rru = Booking::where('bookable_id',$id)->orderBy('id','asc')->first();
+        if(!empty($rru->review_key)){
+            return new BookingByIdResource($rru);
+        }else{
+            $rru = Booking::where('bookable_id',$id)->where('review_key','!=','')->orderBy('id','asc')->first();
+            return new BookingByIdResource($rru);
+        }
     }
 }
