@@ -2,6 +2,8 @@ import {createRouter, createWebHistory } from "vue-router";
 import Bookables from "./bookables/Bookables.vue";
 import Bookable from "./bookable/Bookable.vue";
 import Review from "./Review/Review.vue";
+import Login from "./Auth/Login.vue";
+import Register from "./Auth/Register.vue";
 
 
 
@@ -25,6 +27,20 @@ const routes = [
         path: "/review/:id",
         component: Review,
         name : "review"
+
+    },
+    {
+
+        path: "/login",
+        component: Login,
+        name : "login"
+
+    },
+    {
+
+        path: "/register",
+        component: Register,
+        name : "register"
 
     },
     

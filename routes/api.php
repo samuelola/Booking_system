@@ -9,17 +9,22 @@ use App\Http\Controllers\Api\BookableReviewController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\BookingByReviewController;
 use App\Http\Controllers\Api\BookingByIdReviewController;
+use App\Http\Controllers\Api\AuthController;
 
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// Route::get('/user', function (Request $request) {
+//     return $request->user();
+// })->middleware('auth:api');
 
+Route::post('register', [AuthController::class, 'register'])->name('register');
+Route::post('login', [AuthController::class, 'login'])->name('login');
+Route::post('logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth:api');
+Route::get('user', [AuthController::class, 'user'])->name('user')->middleware('auth:api');
 
-Route::group(['prefix'=>'V1'], function(){
+// Route::group(['prefix'=>'V1'], function(){
 
     
-});
+// });
 
 Route::apiResource('bookables', BookableController::class)->only(['index','show']);
 Route::apiResource('reviews',ReviewController::class)->only(['show','store']);
