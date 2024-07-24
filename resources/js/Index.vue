@@ -20,6 +20,26 @@
                  </div>
              </div>
              
+                 <div v-if="fgg">
+                    
+                 </div>
+                 
+                <div v-else>
+                    
+                </div>
+
+                <div class="d-flex" role="search">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+
+                                <button type="submit" class="btn btn-outline-primary" @click="logoutAction">Logout</button>
+                            </li>
+                        </ul>
+            
+                    </div>
+            
+             
+             
         </nav>
         <!-- <nav class="navbar navbar-expand-sm bg-white fixed-top border-bottom navbar-light">
              <div class="container-fluid">
@@ -55,3 +75,43 @@
     </div>
     
 </template>
+
+<script>
+export default {
+
+    data() {
+
+        return {
+            fgg: false
+        }
+    },
+
+    mounted(){
+        this.fgg = false;
+        if (localStorage.getItem('token') == "" || localStorage.getItem('token') == null) {
+                this.fgg = true;
+                console.log(this.fgg);
+            }
+        
+    },
+    methods: {
+        logoutAction() {
+            axios.post('/api/logout', {}, { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+                .then(res => {
+                    localStorage.setItem('token', '');
+                    this.$router.push('/login')
+                })
+                .catch(e => {
+                    return e;
+                })
+        },
+
+        
+        
+    },
+
+   
+      
+   }
+   
+</script>

@@ -1,5 +1,6 @@
 <template>
     <div>
+        <h3 class="profile">Welcome {{ user?.name }}</h3>
         <div v-if="loading">
               <div class="row mb-4" v-for="row in rows" :key="'row' + row">
                 <div class="col d-flex align-items-stretch" v-for="(bookable, column) in bookablesInRow(row)"
@@ -35,15 +36,45 @@ export default {
         return {
             bookables: null,
             loading : false,
-            columns:3
+            columns: 3,
+            user:null
         };
+    },
+    created() {
+        this.getUser();
+        if (localStorage.getItem('token') == "" || localStorage.getItem('token') == null) {
+            this.$router.push('/login');
+        } else {
+            this.getUser();
+        }
+        const request = axios.get('/api/bookables')
+
+            .then(response => {
+                this.loading = 'true';
+                this.bookables = response.data.data;
+                //this.bookables.push({ title: "x", description: "x" });
+                
+            });
+
     },
     computed:{
       rows(){
          return this.bookables == null ? 0 : Math.ceil(this.bookables.length/this.columns);
       }
     },
-    methods:{
+    methods: {
+
+      getUser() {
+
+            axios.get(`/api/user`, { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+             .then((r) => {
+                 this.user = r.data.user_details;
+                 console.log(user);
+            })
+            .catch((e) => {
+            return e
+            });
+      },  
 
       bookablesInRow(row){
          return this.bookables.slice((row - 1) * this.columns, row * this.columns);
@@ -55,19 +86,12 @@ export default {
       }
     
     },
-    created() {
-        
-        const request = axios.get('/api/bookables')
-
-            .then(response => {
-                this.loading = 'true';
-                this.bookables = response.data.data;
-                //this.bookables.push({ title: "x", description: "x" });
-                
-            });
-
-    },
+    
 };
 </script>
 
-<style></style>
+<style scoped>
+   .profile{
+    margin-bottom: 32px;
+   }
+</style>

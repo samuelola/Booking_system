@@ -1,5 +1,6 @@
 <template>
     <div>
+        
         <div class="container">
             <div class="row">
                    <div class="col-md-2"></div>
@@ -16,7 +17,7 @@
                                 <input type="password" class="form-control" name="password" v-model="formData.password">
                             </div>
                             
-                            <button type="submit" class="btn btn-primary" @click.prevent="login">Submit</button>
+                            <button type="submit" class="btn btn-primary" @click.prevent="login" :disabled="isSubmitting">Submit</button>
                         </form>
                     </div>
                     <div class="col-md-2"></div>
@@ -37,24 +38,34 @@ export default {
             formData: {
                 email: null,
                 password : null
-            }
+            },
+            isSubmitting:false,
         }
         
+    },
+
+    created() {
+        if (localStorage.getItem('token') != '' && localStorage.getItem('token') != 'null') {
+            this.$router.push('/');
+        }
     },
 
     methods: {
         login() {
 
-
+            this.isSubmitting = true;
             axios.post(`/api/login`, this.formData)
                 .then(response => {
 
-                    if (response.status === 200 ) {
-                        //response.data.token;
-                        console.log(response.data.user);
+                    if (response.status === 200) {
+                        localStorage.setItem('token', response.data.token);
+                        this.$router.push('/');
+                        //console.log(response.data.user);
                      }
                 })
-                .catch();
+                .catch(error => {
+                    this.isSubmitting = false;
+                });
         }
     }
        
