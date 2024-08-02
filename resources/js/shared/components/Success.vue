@@ -3,6 +3,9 @@
        <i class="fas fa-thumbs-up"></i>
        <h1 class="mt-4">Congratulations !</h1>
        <h2>You have successfully completed a review</h2>
+       <p style="text-align:center">
+                 ​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​<router-link style="text-align:center;font-size: 20px;"  :to="{name:'bookables'}">Back to Home</router-link>
+       </p>
     </div>
 </template>
 

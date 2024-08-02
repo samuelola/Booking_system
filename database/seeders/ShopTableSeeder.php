@@ -4,18 +4,16 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\User;
+use App\Models\Shop;
 
 
-class UserTableSeeder extends Seeder
+class ShopTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        User::factory()->testUser()->create();
-        User::factory(20)->create();
-
+        Shop::factory(20)->create();
     }
 }

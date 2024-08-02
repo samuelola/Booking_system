@@ -1,9 +1,14 @@
 <template>
     <div style="padding: 1.25rem;">
-        
-        <router-link class="btn btn-sm btn-primary" :to="{name:'review', params:{id:review_key}}">
+        <div v-if="error">
+
+        </div>
+        <div v-else>
+               <router-link class="btn btn-sm btn-primary" :to="{name:'review', params:{id:review_key}}">
                 Create a review
-            </router-link>
+              </router-link>
+        </div>
+        
         <h6 class="text-uppcase text-secondary font-weight-bolder pt-4">Review List</h6>
         <div v-if="loading">
              <div class="border-bottom d-none d-md-block" v-for="(review, index) in reviews" :key="index">
@@ -22,6 +27,9 @@
                 <div class="row pt-4 pb-4">
                     <div class="col-md-12">{{ review.content }}</div>
                 </div>
+                <div class="row pt-4 pb-4">
+                    <div class="col-md-12">Reviewed By : {{ review.content }}</div>
+                </div>
             </div>
         </div>
         <div v-else>
@@ -32,7 +40,7 @@
 </template>
 
 <script>
-
+import { is500 } from '../shared/Utils/response';
 export default {
     props: {
         bookableId : String
@@ -41,12 +49,13 @@ export default {
         return {
             loading: false,
             reviews: null,
-            review_key : null
+            review_key: null,
+            error: false,
         }
     },
 
     created() {
-        axios.get(`/api/bookables/${this.bookableId}/reviews`)
+        axios.get(`/api/bookables/${this.bookableId}/reviews`,{ headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
             .then(response => {
                 this.loading = 'true';
                 this.reviews = response.data.data 
@@ -59,9 +68,16 @@ export default {
 
         axios.get(`/api/booking-by/${this.bookableId}`)
             .then(response => {
-                this.review_key = response.data.data.review 
-                console.log(this.bookableId);
-            });  
+                this.review_key = response.data.data.review
+                console.log(this.review_key);
+            })
+            .catch(error => {
+
+                if (is500(error)) {
+                    this.error = true;
+                    
+                 }
+            }); 
     }
 
     

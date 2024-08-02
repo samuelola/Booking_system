@@ -12,7 +12,7 @@ class BookableController extends Controller
 {
     public function index(){
 
-        return BookableIndexResource::collection(Bookable::all());
+        return BookableIndexResource::collection(Bookable::orderByDesc('created_at')->get());
     }
 
     public function show(Request $request, $id){

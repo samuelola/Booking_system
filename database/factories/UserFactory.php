@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Enums\UserStatus;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -27,8 +28,10 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            //'password' => static::$password ??= Hash::make('password'),
+            'password' => Hash::make('1234567'),
             'remember_token' => Str::random(10),
+            'role' => fake()->randomElement(UserStatus::cases())->value
         ];
     }
 
@@ -47,10 +50,12 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes)=>[
 
             'name' => 'Tester User',
-            'email' => 'test@gmail.com',
+            'email' => 'admin@gmail.com',
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            //'password' => static::$password ??= Hash::make('password'),
+            'password' => Hash::make('1234567'),
             'remember_token' => Str::random(10),
+            'role'=> UserStatus::ADMIN->value
             
         ]);
     }

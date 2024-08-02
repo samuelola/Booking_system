@@ -1,92 +1,148 @@
 <template>
-    <div>
-        <h3 class="profile">Welcome {{ user?.name }}</h3>
+        <Navigation></Navigation>
+        
         <div v-if="loading">
-              <div class="row mb-4" v-for="row in rows" :key="'row' + row">
-                <div class="col d-flex align-items-stretch" v-for="(bookable, column) in bookablesInRow(row)"
-                 :key="'row' + row + column"
-                >
-
-                  <BookableListItem
-                  v-bind="bookable"
-                   ></BookableListItem>
+              <div class="container mt-4 mb-4 pr-4 pl-4">
+                <div class="row">
+                    <div class="col-md-6">
+                            <h3 class="profile">Welcome {{ user?.name }}</h3>
+                    </div>
+                    <div class="col-md-6">
+                         
+                         <!-- <Filters></Filters> -->
+                           <div  class="">
+                                <form>
+                                    <input type="text" class="form-control"  name="searcher" style="margin-right: 4px;display: inline;width: 50%;margin-left: 128px;" placeholder="Search Booking ..." v-model="searcher">
+                                    <button class="btn btn-outline-success" style="margin-right: 4px;margin-top: -5px;padding-top: 4px;
+                        padding-bottom: 4px;" type="submit" @click.prevent="searching">Filter</button>
+                                    <button class="btn btn-outline-danger" style="margin-right: 4px;padding-top: 4px;margin-top: -5px;
+                        padding-bottom: 4px;" @click.prevent="clear" type="clear">Clear</button>
+                                </form>
+                            </div>
+                    </div>
+                </div>
+                    
+                     
+                <div class="row align-self-stretch">
+                
+                    <div class="col-md-3 mt-4" v-for="bookable in visiblePaginationRows" :key="bookable"> 
+                        <BookableListItem
+                            v-bind="bookable"
+                            ></BookableListItem>     
+                    </div>   
+                            
                     
                 </div>
-                  <div class = "col" v-for="p in placeholdersInRow(row)" :key="'placeholder' + row + p"></div>
-                  
-            </div>
-         </div>
-         
-         <div v-else>
-             Data is Loading.....
-         </div>
-    
-    </div>
-    
+                     
+                    
+
+                </div>
+                    
+                
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                             <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-center mt-4">
+                                        <li class="page-item">
+                                            <a class="page-link" href="#"
+                                            @click="changePage(currentPage - 1)"
+                                            :disabled = "currentPage === 1"
+                                            >Previous</a>
+                                        </li>
+                                        
+                                        <li class="page-item"
+                                            v-for="pageNumber in visiblePageNumbers"
+                                            :key="pageNumber"
+                                            :class="{active : currentPage == pageNumber || pageNumber === '....'}"
+                                        >
+                                            
+                                        <a class="page-link" href="#" @click="changePage(pageNumber)">{{ pageNumber }}</a>
+                                        </li>
+
+                                        <li class="page-item">
+                                            <a class="page-link" href="#"
+                                            @click="changePage(currentPage + 1)"
+                                            :disabled = "currentPage === 1"
+                                            >Next</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                        </div>
+                    </div>
+                </div>
+                      
+        </div>
+        <div v-else>
+            Data is Loading.....
+        </div>
+        
+        
 </template>
 
 <script>
 import BookableListItem from "./BookableListItem.vue";
-
+import Navigation from "../Nav/Nav.vue";
+import Pagination from "../shared/mixins/Pagination";
+import Filters from "../shared/components/Filters.vue";
+import { is404 } from '../shared/Utils/response';
+import UserInfo from "../shared/mixins/UserInfo";
 export default {
+    mixins : [Pagination,UserInfo],
     components: {
         BookableListItem,
+        Navigation,
+        Filters
     },
     data() {
         return {
             bookables: null,
             loading : false,
             columns: 3,
-            user:null
+            searcher: null,
+            searchResult: null,
+            error: false,
         };
     },
     created() {
-        this.getUser();
-        if (localStorage.getItem('token') == "" || localStorage.getItem('token') == null) {
-            this.$router.push('/login');
-        } else {
-            this.getUser();
-        }
-        const request = axios.get('/api/bookables')
+       
+        //All bookables start here
+        axios.get('/api/bookables',{ headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
 
             .then(response => {
                 this.loading = 'true';
                 this.bookables = response.data.data;
-                //this.bookables.push({ title: "x", description: "x" });
-                
+            
             });
 
     },
-    computed:{
-      rows(){
-         return this.bookables == null ? 0 : Math.ceil(this.bookables.length/this.columns);
-      }
-    },
+    
     methods: {
 
-      getUser() {
+        searching() {
+            this.error= false;
+            axios.get(`/api/search/${this.searcher}`,{ headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+                .then(response => {
+                    this.searchResult = response.data.data;
+                    console.log(this.searchResult);
+                })
+                .catch(error => {
+                    if (is404(error)) {
+                        this.error = true;
+                        alert("No result  found");
+                        this.$router.push('/');
+                    }
 
-            axios.get(`/api/user`, { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
-             .then((r) => {
-                 this.user = r.data.user_details;
-                 console.log(user);
-            })
-            .catch((e) => {
-            return e
-            });
-      },  
+                    
+                });
+        },
+        clear() {
+            this.searcher = null;
+        }
 
-      bookablesInRow(row){
-         return this.bookables.slice((row - 1) * this.columns, row * this.columns);
-      },
-
-      //this  function you to adjust the last item to be in a single column
-      placeholdersInRow(row){
-         return this.columns - this.bookablesInRow(row).length;
-      }
-    
     },
-    
+
 };
 </script>
 

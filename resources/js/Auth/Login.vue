@@ -1,7 +1,33 @@
 <template>
-    <div>
+     <nav class="navbar navbar-expand-lg border-bottom navbar-light bg-light">
+        <div class="container-fluid">
+             <router-link class="navbar-brand" :to="{name:'bookables'}">Logo</router-link>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <!-- <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <router-link class="nav-link" :to="{name:'bookables'}">Home</router-link>
+                    </li>
+                    
+                </ul> -->
+                <ul class="navbar-nav ms-auto">
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="">Pricing</a>
+                    </li> -->
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
         
-        <div class="container">
+        <div class="container mt-4 mb-4 pr-4 pl-4">
+            
             <div class="row">
                    <div class="col-md-2"></div>
                     <div class="col-md-8">
@@ -19,13 +45,15 @@
                             
                             <button type="submit" class="btn btn-primary" @click.prevent="login" :disabled="isSubmitting">Submit</button>
                         </form>
+                        <router-link class="mt-4" :to="{name:'register'}">Register Here</router-link>
                     </div>
+                    
                     <div class="col-md-2"></div>
             </div>
             
         </div>
         
-    </div>
+    
 </template>
 
 <script>

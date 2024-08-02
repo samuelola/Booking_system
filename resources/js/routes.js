@@ -1,17 +1,20 @@
 import {createRouter, createWebHistory } from "vue-router";
-import Bookables from "./bookables/Bookables.vue";
+// import Bookables from "./bookables/Bookables.vue";
 import Bookable from "./bookable/Bookable.vue";
 import Review from "./Review/Review.vue";
 import Login from "./Auth/Login.vue";
 import Register from "./Auth/Register.vue";
-
+import Shop from "./Shop/shop.vue";
+import Summary from "./Shop/Summary.vue";
+import Admin from "./Admin/Admin.vue";
+import Cart from "./Shop/Cart.vue";
 
 
 const routes = [
     {
 
         path: "/",
-        component: Bookables,
+        component: () => import("./bookables/Bookables.vue"), //this section Implementing Lazy Loading for Improved Performance
         name : "bookables"
 
     },
@@ -41,6 +44,34 @@ const routes = [
         path: "/register",
         component: Register,
         name : "register"
+
+    },
+    {
+
+        path: "/shop",
+        component: Shop,
+        name : "shop"
+
+    },
+    {
+
+        path: "/summary/:id",
+        component: Summary,
+        name : "summary"
+
+    },
+    {
+
+        path: "/admin/",
+        component: Admin,
+        name : "admin"
+
+    },
+    {
+
+        path: "/cart",
+        component: Cart,
+        name : "cart"
 
     },
     

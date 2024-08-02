@@ -1,5 +1,7 @@
 <template>
-    <success v-if="success"></success>
+    <Navigation></Navigation>
+    <div class="container mt-4 mb-4 pr-4 pl-4">
+            <success v-if="success"></success>
     <div v-else>
             <div class="row">
         <!-- <fatal-error v-if="true"></fatal-error> -->
@@ -11,10 +13,14 @@
         <div v-else>
             <div v-if="alreadyReviewed">
               <h3 class="text-center">You have already left a review for this booking</h3>
+              
+               <div style="text-align:center">
+                 ​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​<router-link style="text-align:center"  :to="{name:'bookables'}">Back to Home</router-link>
+               </div>
             </div>
             <div v-else>
 
-            <div class="container">
+               
                 <div class="row">
                     <div class="col-md-4">
                         <div class="card">
@@ -49,23 +55,29 @@
                     </div> 
                     
                 </div>
-            </div>
+               
             </div>
         </div>
         
        
     </div>
     </div>
+    </div>
+    
     
 </template>
 
 <script>
 import axios from 'axios';
 import { is404, is422, is500 } from '../shared/Utils/response';
-import validation_errorss from '../shared/mixins/ValidationErrors'
+import validation_errorss from '../shared/mixins/ValidationErrors';
+import Navigation from "../Nav/Nav.vue";
 
 export default {
-  mixins: [validation_errorss],
+    mixins: [validation_errorss],
+    components: {
+        Navigation
+    },
     data() {
         return {
             review: {
@@ -87,7 +99,7 @@ export default {
        this.review.uuid = this.$route.params.id;
        this.loading = true;
        try {
-          this.existingReview = (await axios.get(`/api/reviews/${this.review.uuid}`)).data.data;
+          this.existingReview = (await axios.get(`/api/reviews/${this.review.uuid}`,{ headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })).data.data;
        } catch(err) {
            if (is404(err)) {
 
@@ -124,7 +136,7 @@ export default {
             this.success = false;
 
             try {
-                this.success = (await axios.post(`/api/reviews`, this.review)).status;
+                this.success = (await axios.post(`/api/reviews`, this.review,{ headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })).status;
                 if (this.success == 201) {
                     this.success = true;
                 }
