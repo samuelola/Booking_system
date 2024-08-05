@@ -138,6 +138,8 @@ export default {
                 });
         },
         clear() {
+
+            window.location.reload();
             this.searcher = null;
         }
 

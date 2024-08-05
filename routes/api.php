@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\BookableSearchController;
 use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\NewPaymentController;
 
 
 // Route::get('/user', function (Request $request) {
@@ -36,6 +37,8 @@ Route::apiResource('reviews',ReviewController::class)->only(['show','store']);
 Route::apiResource('search',BookableSearchController::class);
 Route::apiResource('shops',ShopController::class);
 Route::apiResource('cart',CartController::class);
+Route::apiResource('checkout',CheckoutController::class);
+Route::get('payment-callback',[NewPaymentController::class,'payment']);
 });
 //Route::apiResource('bookables', BookableController::class)->only(['index','show'])->middleware('auth:api');
 
@@ -45,4 +48,5 @@ Route::get('bookables/{bookable}/reviews',BookableReviewController::class)
 ->name('bookables.reviews.index')->name('booking.by-review.show');
 Route::get('booking-by-review/{reviewKey}',BookingByReviewController::class);
 Route::get('booking-by/{id}',BookingByIdReviewController::class);
-Route::apiResource('checkout',CheckoutController::class);
+
+

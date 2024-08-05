@@ -8,6 +8,7 @@ import Shop from "./Shop/shop.vue";
 import Summary from "./Shop/Summary.vue";
 import Admin from "./Admin/Admin.vue";
 import Cart from "./Shop/Cart.vue";
+import Checkout from "./Shop/Checkout.vue";
 
 
 const routes = [
@@ -72,6 +73,13 @@ const routes = [
         path: "/cart",
         component: Cart,
         name : "cart"
+
+    },
+    {
+
+        path: "/checkout",
+        component: Checkout,
+        name : "checkout"
 
     },
     
