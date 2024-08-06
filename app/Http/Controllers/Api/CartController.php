@@ -42,6 +42,7 @@ class CartController extends Controller
         $basket_count = Cart::where('user_id',$current_user)->sum('qty');
         return response()->json(['basket_count'=>$basket_count],200);
         
-
     }
+
+    
 }

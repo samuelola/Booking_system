@@ -41,7 +41,7 @@ export default{
     methods: {
         hearSecret(secret) {
             this.hearSecrettt = secret;
-            this.sendToAnother('anotherShop',this.hearSecrettt);
+            this.sendToAnother('anothershop',this.hearSecrettt);
         },
 
         sendToAnother(name,uuu) {

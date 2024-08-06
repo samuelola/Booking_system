@@ -35,7 +35,7 @@
                        </a>
                         -->
                        <router-link :to="{name : 'cart'}" style="text-decoration: none;">
-                              Cart <span class="badge text-bg-primary align-top mr-4">0</span>
+                              Cart <span class="badge text-bg-primary align-top mr-4">{{ cart_counter }}</span>
                        </router-link>
                         
                     </li>
@@ -125,7 +125,9 @@ export default {
         return {
             shops: null,
             loading: false,
-            hearSecrettt: null
+            hearSecrettt: null,
+            user_id: null,
+            cart_counter : null
             
         }
     },
@@ -146,11 +148,31 @@ export default {
     methods: {
         foo(fgf) {
             this.hearSecrettt = fgf; 
-            console.log(this.hearSecrettt);
         },
 
-        
+    },
 
+    mounted() { 
+        const headers = {
+            Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+        axios.get(`/api/user`, { headers }).then((r) => {
+            this.user_id = r.data.user_details.id;
+            if (this.user_id) {
+
+            axios.get(`/api/count-cart/${this.user_id}`, { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+            .then(response => {
+                this.cart_counter = response.data.basket_count;
+            })
+            .catch();
+                
+            }
+        })
+         .catch((e) => {
+            return e
+            });     
+
+      
     }
 
   

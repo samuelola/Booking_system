@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\NewPaymentController;
+use App\Http\Controllers\Api\CountCartController;
 
 
 // Route::get('/user', function (Request $request) {
@@ -39,6 +40,9 @@ Route::apiResource('shops',ShopController::class);
 Route::apiResource('cart',CartController::class);
 Route::apiResource('checkout',CheckoutController::class);
 Route::get('payment-callback',[NewPaymentController::class,'payment']);
+Route::get('count-cart/{user_id}',[CountCartController::class,'countcart']);
+Route::post('count-cart/{cart_id}/{user_id}',[CountCartController::class,'delete']);
+Route::get('count-cart/{cart_id}/{user_id}',[CountCartController::class,'cartdetails']);
 });
 //Route::apiResource('bookables', BookableController::class)->only(['index','show'])->middleware('auth:api');
 

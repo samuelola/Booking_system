@@ -39,9 +39,17 @@ app.config.globalProperties.$filters = {
   dateformatt(value) {
     return moment(value).format('MMMM Do YYYY');
   },
-  formatPrice(value) {
-      let val = (value / 1).toFixed(2).replace(',', '.')
-      return val.toString().replace('/\B(?=(\d{3})+(?!\d))',".");
+  formatPrice(num) {
+      // let val = (value / 1).toFixed(2).replace(',', '.')
+    // return val.toString().replace('/\B(?=(\d{3})+(?!\d))',".");
+    var str = num.toString().split('.');
+    if (str[0].length >= 4) {
+        str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+    }
+    if (str[1] && str[1].length >= 4) {
+        str[1] = str[1].replace(/(\d{3})/g, '$1 ');
+    }
+    return str.join('.');
   }
 }
 app.use(router)
