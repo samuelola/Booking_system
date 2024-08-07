@@ -4,7 +4,7 @@
             <img :src="image" class="card-img-top" alt="...">
             <h5 class="card-title">{{ title }}</h5>
             <p>{{ description }}</p>
-            <p>#{{ price }}.00</p>
+            <p>&#8358;{{ price }}.00</p>
             <!-- <p>{{ hearSecrettt }}</p> -->
             <!-- <router-link class="btn btn-sm btn-outline-success" :to="{name:'cart',params:{id:uuid}}" target="_blank">Add To Cart</router-link> -->
              <AddToCart @changeBasketCount="hearSecret" :productID="id" :priceCart="price"></AddToCart>

@@ -43,6 +43,7 @@ Route::get('payment-callback',[NewPaymentController::class,'payment']);
 Route::get('count-cart/{user_id}',[CountCartController::class,'countcart']);
 Route::post('count-cart/{cart_id}/{user_id}',[CountCartController::class,'delete']);
 Route::get('count-cart/{cart_id}/{user_id}',[CountCartController::class,'cartdetails']);
+Route::put('count-cart/{cart_id}/{qty}/{totalprice}',[CountCartController::class,'updatecartdetails']);
 });
 //Route::apiResource('bookables', BookableController::class)->only(['index','show'])->middleware('auth:api');
 

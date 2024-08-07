@@ -21,6 +21,15 @@ class CountCartController extends Controller
         return response()->json(['basket_counter'=> $total_cart],200);
     }
 
+    public function updatecartdetails($id,$qty,$totalprice){
+
+         $cart = Cart::find($id);
+         $cart->qty = $qty;
+         $cart->price = $totalprice;
+         $cart->save();
+         return response()->json(['cart_updated'=> $cart],200);
+    }
+
     public function delete($id,$user_id){
         $get_cart = Cart::where('id',$id)->delete();
         $basket_count = Cart::where('user_id',$user_id)->sum('qty');

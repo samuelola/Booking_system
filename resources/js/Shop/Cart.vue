@@ -23,7 +23,7 @@
                     <li class="nav-item" style="margin-top: 10px;
     margin-right: 12px;" v-if="hearSecrettt">
                        <router-link :to="{name : 'cart'}" style="text-decoration: none;">
-                              Cart <span class="badge text-bg-primary align-top mr-4">{{ hearSecrettt }}</span>
+                           Go to Cart <span class="badge text-bg-primary align-top mr-4">{{ hearSecrettt }}</span>
                        </router-link>
                         
                     </li>
@@ -34,7 +34,7 @@
                        </a>
                         -->
                        <router-link :to="{name : 'cart'}" style="text-decoration: none;">
-                              Cart <span class="badge text-bg-primary align-top mr-4">{{ cart_counter }}</span>
+                           Go to Cart <span class="badge text-bg-primary align-top mr-4">{{ cart_counter }}</span>
                        </router-link>
                         
                     </li>
@@ -64,7 +64,7 @@
                                     <th scope="col"> </th>
                                     <th scope="col">Product</th>
                                     <th scope="col" class="text-center">Quantity</th>
-                                    <th scope="col" class="text-right">Price</th>
+                                    <th scope="col" class="text-right">Price (&#8358;)</th>
                                     <th scope="col" class="text-right">Total</th>
                                     <th> </th>
                                 </tr>
@@ -73,9 +73,12 @@
                                 <tr  v-for="(basketlist,index) in basketlists">
                                     <td><img :src="basketlist.product.image" width="50" height="50"/> </td>
                                     <td>{{ basketlist.product.title }}</td>
-                                    <td><input class="form-control" type="text" v-model="basketlist.qty" /></td>
-                                    <td class="text-right"># {{ $filters.formatPrice(basketlist.product.price) }}</td>
-                                    <td class="text-right"># {{ $filters.formatPrice(basketlist.price) }}</td>
+                                    <td><input class="form-control" min="1" type="number"  v-model="basketlist.qty" /></td>
+                                    <td class="text-right">&#8358; {{ $filters.formatPrice(basketlist.product.price) }}</td>
+                                    <!-- <td class="text-right" v-if="vv"># {{ $filters.formatPrice(newprice) }}</td> -->
+                                    <td ><input class="form-control" type="number" readonly v-model="basketlist.price" /></td>
+                                    
+                                    <td class="text-right"><button type="submit"  @click.prevent="updateItems(basketlist.id,basketlist.qty,basketlist.product.price,this.user_idd)" class="btn btn-sm btn-outline-success">Update Cart</button></td>
                                     <td class="text-right"><button type="submit" @click.prevent="deleteItems(basketlist.id,index,this.user_idd,this.subtotal,basketlist.price,basketlist.qty)"  class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> </button> </td>
                                 </tr>
                             
@@ -86,7 +89,7 @@
                                     <td></td>
                                     <td></td>
                                     <td>Sub-Total</td>
-                                    <td class="text-right">#{{ $filters.formatPrice(subtotal) }}</td>
+                                    <td class="text-right">&#8358;{{ $filters.formatPrice(subtotal) }}</td>
                                 </tr>
                                 <tr>
                                     <td></td>
@@ -94,7 +97,7 @@
                                     <td></td>
                                     <td></td>
                                     <td>Shipping</td>
-                                    <td class="text-right">#{{ shipping }}</td>
+                                    <td class="text-right">&#8358;{{ shipping }}</td>
                                 </tr>
                                 <tr>
                                     <td></td>
@@ -102,7 +105,7 @@
                                     <td></td>
                                     <td></td>
                                     <td><strong>Total</strong></td>
-                                    <td class="text-right"><strong>#{{ $filters.formatPrice(total) }}</strong></td>
+                                    <td class="text-right"><strong>&#8358;{{ $filters.formatPrice(total) }}</strong></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -160,7 +163,12 @@ export default {
             loading: false,
             cart_counter: null,
             user_id: null,
-            newsubtotal : 0
+            newsubtotal: 0,
+            thenewprice: null,
+            newprice: null,
+            vv: false,
+            myqty: 0,
+    
         }
          
     },
@@ -182,6 +190,7 @@ export default {
                              }
 
                              this.total = this.subtotal + this.shipping;
+                           
                              
                          })
                          .catch();
@@ -200,30 +209,75 @@ export default {
             });
        
     },
+
     
     methods: {
+
+        cent(name,price) {
+            var tor = name * price;
+            //alert(tor);
+            
+
+            alert(tor);
+        },
+        
         foo(fgf) {
             this.hearSecrettt = fgf; 
         },
 
         deleteItems(id, index, user_id, subtotal,price,qty) {
             
-            var subtotas = subtotal - price;
-            this.newsubtotal = subtotas;
             axios.post(`/api/count-cart/${id}/${user_id}`)
                 .then(response => {
                     this.cart_counter = response.data.basket_count;
                     this.basketlists.splice(index, 1);
 
                 })
-                .catch()
+                .catch(); 
+                
+
         },
+
+        updateItems(id, qty, productprice,user_id) {
+            this.vv = true;
+            var tot = qty * productprice;
+            axios.put(`/api/count-cart/${id}/${qty}/${tot}`)
+                .then(response => {
+                    this.newprice = response.data.cart_updated.price;
+                })
+                .catch(); 
+
+                axios.get(`/api/cart/${user_id}`)
+                         .then(response => {
+                             this.loading = 'true';
+                             this.basketlists = response.data.data;
+
+                             this.subtotal = 0;
+                             for (let i = 0; i < this.basketlists.length; i++){
+                                //  var newtotal = this.basketlists[i].product.price * this.basketlists[i].qty;
+                                 //  this.subtotal += newtotal ;
+                                 this.subtotal += this.basketlists[i].product.price * this.basketlists[i].qty;
+                             }
+
+                             this.total = this.subtotal + this.shipping;
+
+                           
+                             
+                         })
+                .catch(); 
+
+                axios.get(`/api/count-cart/${user_id}`, { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+                        .then(response => {
+                            this.cart_counter = response.data.basket_count;
+                        })
+                        .catch(); 
+        }
        
 
     },
 
     mounted() {
-        //this.retrieve();
+        
         this.total = 0;
         this.subtotal = 0;
         this.shipping = 6.95;
@@ -234,9 +288,10 @@ export default {
 
     computed: {
         checkCartCount() {
-
             this.cart_counter == 0;
-        }
+        },
+
+        
     }
 
     

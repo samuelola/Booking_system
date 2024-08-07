@@ -24,7 +24,7 @@
                     <li class="nav-item" style="margin-top: 10px;
     margin-right: 12px;" v-if="hearSecrettt">
                        <router-link :to="{name : 'cart'}" style="text-decoration: none;">
-                              Cart <span class="badge text-bg-primary align-top mr-4">{{ hearSecrettt }}</span>
+                            Go to  Cart <span class="badge text-bg-primary align-top mr-4">{{ hearSecrettt }}</span>
                        </router-link>
                         
                     </li>
@@ -35,7 +35,7 @@
                        </a>
                         -->
                        <router-link :to="{name : 'cart'}" style="text-decoration: none;">
-                              Cart <span class="badge text-bg-primary align-top mr-4">{{ cart_counter }}</span>
+                            Go to  Cart <span class="badge text-bg-primary align-top mr-4">{{ cart_counter }}</span>
                        </router-link>
                         
                     </li>
