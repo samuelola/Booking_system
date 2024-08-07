@@ -50,12 +50,7 @@
         <div class="container mt-4">
             <div class="row">
                 <div class="col-12">
-                    <!-- <div v-if="cart_counter = 0">
-
-                    </div>
-                    <div v-else>
-
-                    </div> -->
+                   
                     
                     <div class="table-responsive">
                         <table class="table table-striped">
@@ -75,8 +70,7 @@
                                     <td>{{ basketlist.product.title }}</td>
                                     <td><input class="form-control" min="1" type="number"  v-model="basketlist.qty" /></td>
                                     <td class="text-right">&#8358; {{ $filters.formatPrice(basketlist.product.price) }}</td>
-                                    <!-- <td class="text-right" v-if="vv"># {{ $filters.formatPrice(newprice) }}</td> -->
-                                    <td ><input class="form-control" type="number" readonly v-model="basketlist.price" /></td>
+                                    <td class="text-right">&#8358; {{ $filters.formatPrice(basketlist.price) }}</td>
                                     
                                     <td class="text-right"><button type="submit"  @click.prevent="updateItems(basketlist.id,basketlist.qty,basketlist.product.price,this.user_idd)" class="btn btn-sm btn-outline-success">Update Cart</button></td>
                                     <td class="text-right"><button type="submit" @click.prevent="deleteItems(basketlist.id,index,this.user_idd,this.subtotal,basketlist.price,basketlist.qty)"  class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> </button> </td>
@@ -91,14 +85,14 @@
                                     <td>Sub-Total</td>
                                     <td class="text-right">&#8358;{{ $filters.formatPrice(subtotal) }}</td>
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
                                     <td>Shipping</td>
                                     <td class="text-right">&#8358;{{ shipping }}</td>
-                                </tr>
+                                </tr> -->
                                 <tr>
                                     <td></td>
                                     <td></td>
@@ -189,8 +183,8 @@ export default {
                                  this.subtotal += this.basketlists[i].product.price * this.basketlists[i].qty;
                              }
 
-                             this.total = this.subtotal + this.shipping;
-                           
+                            //  this.total = this.subtotal + this.shipping;
+                             this.total = this.subtotal;
                              
                          })
                          .catch();
@@ -234,6 +228,24 @@ export default {
 
                 })
                 .catch(); 
+
+            axios.get(`/api/cart/${user_id}`)
+                         .then(response => {
+                             this.loading = 'true';
+                             this.basketlists = response.data.data;
+
+                             this.subtotal = 0;
+                             for (let i = 0; i < this.basketlists.length; i++){
+                                 this.subtotal = this.subtotal - (-this.basketlists[i].product.price * this.basketlists[i].qty);
+                                 
+                             }
+
+                             this.total = this.subtotal;
+
+                           
+                             
+                         })
+                .catch();     
                 
 
         },
@@ -254,12 +266,10 @@ export default {
 
                              this.subtotal = 0;
                              for (let i = 0; i < this.basketlists.length; i++){
-                                //  var newtotal = this.basketlists[i].product.price * this.basketlists[i].qty;
-                                 //  this.subtotal += newtotal ;
                                  this.subtotal += this.basketlists[i].product.price * this.basketlists[i].qty;
                              }
 
-                             this.total = this.subtotal + this.shipping;
+                             this.total = this.subtotal;
 
                            
                              

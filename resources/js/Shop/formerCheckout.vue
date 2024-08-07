@@ -1,6 +1,42 @@
 <template>
      <div>
-        <NavCart></NavCart>
+         <nav class="navbar navbar-expand-lg border-bottom navbar-light bg-light">
+        <div class="container-fluid">
+             <router-link class="navbar-brand" :to="{name:'bookables'}">Logo</router-link>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <router-link class="nav-link" :to="{name:'bookables'}">Home</router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link class="nav-link" :to="{name:'shop'}">Shop</router-link>
+                    </li>
+                    <li class="nav-item" v-if="check">
+                        <router-link class="nav-link" :to="{name:'admin'}">Admin</router-link>
+                    </li>
+                    
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    
+                   
+                     <li class="nav-item" style="margin-top: 10px;margin-right: 12px;">
+                       
+                       <router-link :to="{name : 'cart'}" style="text-decoration: none;">
+                           Go to Cart <span class="badge text-bg-primary align-top mr-4">{{ cart_counter }}</span>
+                       </router-link>
+                        
+                    </li>
+                      
+                    <li class="nav-item">
+                        <button type="submit" class="btn btn-outline-primary" @click="logoutAction">Logout</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
         <div class="container mt-4">
         <div class="row">
             <div class="col-md-4 order-md-2 mb-4">
@@ -16,30 +52,30 @@
                 </div>
                 <span class="text-muted">$12</span>
                 </li>
-                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                <!-- <li class="list-group-item d-flex justify-content-between lh-condensed">
                 <div>
                     <h6 class="my-0">Second product</h6>
                     <small class="text-muted">Brief description</small>
                 </div>
                 <span class="text-muted">$8</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                </li> -->
+                <!-- <li class="list-group-item d-flex justify-content-between lh-condensed">
                 <div>
                     <h6 class="my-0">Third item</h6>
                     <small class="text-muted">Brief description</small>
                 </div>
                 <span class="text-muted">$5</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between bg-light">
+                </li> -->
+                <!-- <li class="list-group-item d-flex justify-content-between bg-light">
                 <div class="text-success">
                     <h6 class="my-0">Promo code</h6>
                     <small>EXAMPLECODE</small>
                 </div>
                 <span class="text-success">-$5</span>
-                </li>
+                </li> -->
                 <li class="list-group-item d-flex justify-content-between">
-                <span>Total (USD)</span>
-                <strong>$20</strong>
+                <span>Total (&#8358;)</span>
+                <strong>&#8358;20</strong>
                 </li>
             </ul>
 
@@ -58,7 +94,7 @@
                 <div class="row">
                 <div class="col-md-12 mb-3">
                     <label for="firstName">Name</label>
-                    <input type="text" class="form-control" id="firstName" placeholder="" v-mode="formData.name" required="">
+                    <input type="text" class="form-control" id="name" v-model="formData.name" placeholder="samuel" readonly>
                     <div class="invalid-feedback">
                     Valid first name is required.
                     </div>
@@ -87,7 +123,8 @@
 
                 <div class="mb-3">
                 <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" v-model="formData.email" placeholder="you@example.com">
+                <!-- <input type="hidden" class="form-control"  v-model="formData.reference"> -->
+                <input type="email" class="form-control" id="email" v-model="formData.email" placeholder="you@example.com" readonly/>
                 <div class="invalid-feedback">
                     Please enter a valid email address for shipping updates.
                 </div>
@@ -95,15 +132,23 @@
 
                 <div class="mb-3">
                 <label for="address">Address</label>
-                <input type="text" class="form-control" id="address" placeholder="1234 Main St" required="">
+                <input type="text" class="form-control" id="address" placeholder="1234 Main St" required="" v-model="formData.address">
                 <div class="invalid-feedback">
                     Please enter your shipping address.
                 </div>
                 </div>
 
+                <div class="mb-3">
+                <label for="address">Phone Number </label>
+                <input type="text" class="form-control" id="address" placeholder="Phone number" required="" v-model="formData.phone_number">
+                <div class="invalid-feedback">
+                    Please enter a phone number
+                </div>
+                </div>
+
                 
 
-                <div class="row">
+                <!-- <div class="row">
                 <div class="col-md-5 mb-3">
                     <label for="country">Country</label>
                     <select class="form-control d-block w-100" id="country" required="">
@@ -131,7 +176,7 @@
                     Zip code required.
                     </div>
                 </div>
-                </div>
+                </div> -->
                 <hr class="mb-4">
            
                 <!-- <h4 class="mb-3">Payment</h4> -->
@@ -206,55 +251,69 @@ export default {
     data() {
         return {
             formData : {
-                 user_id: null,
+                user_id: null,
                 email: null,
                 name: null,
-                 amount:20000
-            }
+                amount: null,
+                callback_url: null,
+                address: null,
+                phone_number: null,
+            },
+            newuser_id: null,
+            cart_counter : null
               
           }
     },
 
     created() {
-
+          
           const headers = {
               Authorization: 'Bearer ' + localStorage.getItem('token')   
         }
 
-        axios.get(`/api/user`,{headers})
+        axios.get(`/api/user`, { headers })
             .then((r) => {
                 this.formData.user_id = r.data.user_details.id;
                 this.formData.email = r.data.user_details.email;
                 this.formData.name = r.data.user_details.name;
-              }
+                this.newuser_id = r.data.user_details.id;
+                
+
+                axios.get(`/api/count-cart/${this.newuser_id}`, { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+                        .then(response => {
+                            this.cart_counter = response.data.basket_count;
+                            console.log(this.cart_counter);
+                        })
+                        .catch();
+            }
             )
-            .catch()
+            .catch();
+             
     },
 
      methods: {
          checkout() {
              axios.post(`/api/checkout`,this.formData)
                  .then(response => {
-                     var auth_url = response.data.data.authorization_url;
-                     var reference = response.data.data.reference
-                     //console.log(auth_url);
+                     console.log(response);
+                     var auth_url = response.data.data.authorization_url; 
                      if (auth_url) {
-                         window.location = auth_url;
-                       
-                        
-                        axios.get(`/charge/https://api.paystack.co`)
-                             .then(response => {
-                                 console.log(response);
-                              })
-                             .catch();
-
-                         //this.$router.push('/shop');    
-                     }
+                        //  window.location = auth_url;
+                     }   
+                     
                  })
                  .catch();
-             //alert(this.user_id);
-          }
-      }
+         },
+         
+    },
+
+    mounted() {
+        console.log(this.cart_counter);
+        //this.formData.reference = '' + Math.floor((Math.random() * 1000000000) + 1);
+        this.formData.amount = 20000;
+        this.formData.callback_url = "http://localhost:8000/api/payment-callback";
+    }
+    
     
    }
 </script>

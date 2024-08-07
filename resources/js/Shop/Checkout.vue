@@ -1,6 +1,42 @@
 <template>
      <div>
-        <NavCart></NavCart>
+         <nav class="navbar navbar-expand-lg border-bottom navbar-light bg-light">
+        <div class="container-fluid">
+             <router-link class="navbar-brand" :to="{name:'bookables'}">Logo</router-link>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <router-link class="nav-link" :to="{name:'bookables'}">Home</router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link class="nav-link" :to="{name:'shop'}">Shop</router-link>
+                    </li>
+                    <li class="nav-item" v-if="check">
+                        <router-link class="nav-link" :to="{name:'admin'}">Admin</router-link>
+                    </li>
+                    
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    
+                   
+                     <li class="nav-item" style="margin-top: 10px;margin-right: 12px;">
+                       
+                       <router-link :to="{name : 'cart'}" style="text-decoration: none;">
+                           Go to Cart <span class="badge text-bg-primary align-top mr-4">{{ cart_counter }}</span>
+                       </router-link>
+                        
+                    </li>
+                      
+                    <li class="nav-item">
+                        <button type="submit" class="btn btn-outline-primary" @click="logoutAction">Logout</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
         <div class="container mt-4">
         <div class="row">
             <div class="col-md-4 order-md-2 mb-4">
@@ -9,48 +45,25 @@
                 <span class="badge badge-secondary badge-pill">3</span>
             </h4>
             <ul class="list-group mb-3">
-                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                <li class="list-group-item d-flex justify-content-between lh-condensed" v-for="(basketlist,index) in basketlists">
                 <div>
-                    <h6 class="my-0">Product name</h6>
-                    <small class="text-muted">Brief description</small>
+                    <h6 class="my-0">{{ basketlist.product.title }}</h6>
+                    
                 </div>
-                <span class="text-muted">$12</span>
+                <span class="text-muted">&#8358; {{ $filters.formatPrice(basketlist.price) }}</span>
                 </li>
-                <li class="list-group-item d-flex justify-content-between lh-condensed">
-                <div>
-                    <h6 class="my-0">Second product</h6>
-                    <small class="text-muted">Brief description</small>
-                </div>
-                <span class="text-muted">$8</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between lh-condensed">
-                <div>
-                    <h6 class="my-0">Third item</h6>
-                    <small class="text-muted">Brief description</small>
-                </div>
-                <span class="text-muted">$5</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between bg-light">
-                <div class="text-success">
-                    <h6 class="my-0">Promo code</h6>
-                    <small>EXAMPLECODE</small>
-                </div>
-                <span class="text-success">-$5</span>
-                </li>
+
+                <!-- <li class="list-group-item d-flex justify-content-between">
+                <span>Shipping (&#8358;)</span>
+                <strong>&#8358;{{ shipping }}</strong>
+                </li> -->
+                
                 <li class="list-group-item d-flex justify-content-between">
-                <span>Total (USD)</span>
-                <strong>$20</strong>
+                <span>Total (&#8358;)</span>
+                
+                <strong>&#8358;{{ total }}</strong>
                 </li>
             </ul>
-
-            <form class="card p-2">
-                <div class="input-group">
-                <input type="text" class="form-control" placeholder="Promo code">
-                <div class="input-group-append">
-                    <button type="submit" class="btn btn-secondary">Redeem</button>
-                </div>
-                </div>
-            </form>
             </div>
             <div class="col-md-8 order-md-1 mb-5">
             <h4 class="mb-3">Billing address</h4>
@@ -58,7 +71,7 @@
                 <div class="row">
                 <div class="col-md-12 mb-3">
                     <label for="firstName">Name</label>
-                    <input type="text" class="form-control" id="firstName" placeholder="" v-mode="formData.name" required="">
+                    <input type="text" class="form-control" id="name" v-model="formData.name" placeholder="samuel" readonly>
                     <div class="invalid-feedback">
                     Valid first name is required.
                     </div>
@@ -88,7 +101,7 @@
                 <div class="mb-3">
                 <label for="email">Email</label>
                 <!-- <input type="hidden" class="form-control"  v-model="formData.reference"> -->
-                <input type="email" class="form-control" id="email" v-model="formData.email" placeholder="you@example.com">
+                <input type="email" class="form-control" id="email" v-model="formData.email" placeholder="you@example.com" readonly/>
                 <div class="invalid-feedback">
                     Please enter a valid email address for shipping updates.
                 </div>
@@ -96,96 +109,27 @@
 
                 <div class="mb-3">
                 <label for="address">Address</label>
-                <input type="text" class="form-control" id="address" placeholder="1234 Main St" required="">
+                <input type="text" class="form-control" id="address" placeholder="1234 Main St" required="" v-model="formData.address">
                 <div class="invalid-feedback">
                     Please enter your shipping address.
                 </div>
                 </div>
 
+                <div class="mb-3">
+                <label for="address">Phone Number </label>
+                <input type="phone" class="form-control" id="address" placeholder="Phone number" required="" v-model="formData.phone_number">
+                <div class="invalid-feedback">
+                    Please enter a phone number
+                </div>
+                </div>
+
                 
 
-                <div class="row">
-                <div class="col-md-5 mb-3">
-                    <label for="country">Country</label>
-                    <select class="form-control d-block w-100" id="country" required="">
-                        <option value="">Choose...</option>
-                        <option>United States</option>
-                    </select>
-                    <div class="invalid-feedback">
-                    Please select a valid country.
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label for="state">State</label>
-                    <select class="form-control d-block w-100" id="state" required="">
-                    <option value="">Choose...</option>
-                    <option>California</option>
-                    </select>
-                    <div class="invalid-feedback">
-                    Please provide a valid state.
-                    </div>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <label for="zip">Zip</label>
-                    <input type="text" class="form-control" id="zip" placeholder="" required="">
-                    <div class="invalid-feedback">
-                    Zip code required.
-                    </div>
-                </div>
-                </div>
+               
                 <hr class="mb-4">
            
-                <!-- <h4 class="mb-3">Payment</h4> -->
-
-                <!-- <div class="d-block my-3">
-                <div class="custom-control custom-radio">
-                    <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked="" required="">
-                    <label class="custom-control-label" for="credit">Credit card</label>
-                </div>
-                <div class="custom-control custom-radio">
-                    <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required="">
-                    <label class="custom-control-label" for="debit">Debit card</label>
-                </div>
-                <div class="custom-control custom-radio">
-                    <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required="">
-                    <label class="custom-control-label" for="paypal">Paypal</label>
-                </div>
-                </div> -->
-                <!-- <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="cc-name">Name on card</label>
-                    <input type="text" class="form-control" id="cc-name" placeholder="" required="">
-                    <small class="text-muted">Full name as displayed on card</small>
-                    <div class="invalid-feedback">
-                    Name on card is required
-                    </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="cc-number">Credit card number</label>
-                    <input type="text" class="form-control" id="cc-number" placeholder="" required="">
-                    <div class="invalid-feedback">
-                    Credit card number is required
-                    </div>
-                </div>
-                </div>
-                <div class="row">
-                <div class="col-md-3 mb-3">
-                    <label for="cc-expiration">Expiration</label>
-                    <input type="text" class="form-control" id="cc-expiration" placeholder="" required="">
-                    <div class="invalid-feedback">
-                    Expiration date required
-                    </div>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <label for="cc-expiration">CVV</label>
-                    <input type="text" class="form-control" id="cc-cvv" placeholder="" required="">
-                    <div class="invalid-feedback">
-                    Security code required
-                    </div>
-                </div>
-                </div> -->
-                <!-- <hr class="mb-4"> -->
-                <button class="btn btn-success btn-lg btn-block w-100" type="submit" @click.prevent="checkout">Place Order</button>
+                
+                <button class="btn btn-success btn-lg btn-block w-100" type="submit" @click.prevent="checkout(this.total)">Place Order</button>
             </form>
             </div>
         </div>
@@ -211,49 +155,83 @@ export default {
                 email: null,
                 name: null,
                 amount: null,
-                callback_url : null
-            }
-              
+                callback_url: null,
+                address: null,
+                phone_number: null,
+            },
+            newuser_id: null,
+            cart_counter : null,
+            basketlists: null,
+            shipping: null,
+            subtotal: null,
+            total : null
           }
     },
 
     created() {
-          
+       
           const headers = {
               Authorization: 'Bearer ' + localStorage.getItem('token')   
         }
 
-        axios.get(`/api/user`,{headers})
+        axios.get(`/api/user`, { headers })
             .then((r) => {
                 this.formData.user_id = r.data.user_details.id;
                 this.formData.email = r.data.user_details.email;
                 this.formData.name = r.data.user_details.name;
-              }
+                this.newuser_id = r.data.user_details.id;
+                
+                axios.get(`/api/count-cart/${this.newuser_id}`, { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+                        .then(response => {
+                            this.cart_counter = response.data.basket_count;
+                            
+                        })
+                    .catch();
+
+                 axios.get(`/api/cart/${this.newuser_id}`)
+                         .then(response => {
+                             this.loading = 'true';
+                             this.basketlists = response.data.data;
+                             for (let i = 0; i < this.basketlists.length; i++){
+                                 this.subtotal += this.basketlists[i].product.price * this.basketlists[i].qty;
+                             }
+
+                             this.total = this.subtotal;
+
+                             
+                         })
+                         .catch();   
+            }
             )
-            .catch()
+            .catch();
+             
     },
 
      methods: {
-         checkout() {
+         checkout(tottal) {
+             this.formData.amount = tottal;
              axios.post(`/api/checkout`,this.formData)
                  .then(response => {
                      console.log(response);
                      var auth_url = response.data.data.authorization_url; 
                      if (auth_url) {
-                         window.location = auth_url;
+                        window.location = auth_url;
                      }   
                      
                  })
                  .catch();
+            
          },
          
     },
 
     mounted() {
-
         //this.formData.reference = '' + Math.floor((Math.random() * 1000000000) + 1);
-        this.formData.amount = 20000;
+        // this.formData.amount = 20000;
         this.formData.callback_url = "http://localhost:8000/api/payment-callback";
+        this.shipping = 6.95;
+        console.log(this.total);
+        
     }
     
     

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class CheckoutController extends Controller
 {
@@ -14,6 +15,18 @@ class CheckoutController extends Controller
             'amount' => $request->amount * 100,
             'callback_url' => $request->callback_url
         ];
+
+        $address = $request->address;
+        $phone_number = $request->phone_number;
+        $user_id  = $request->user_id;
+
+        $find_user = User::find($user_id);
+
+        $find_user->address = $address;
+        $find_user->phone_number = $phone_number;
+        $find_user->save();
+
+
 
         $key = "Bearer sk_test_bd26d3bef795b1b0896128cc607ce244af635f69";
         $data_string = json_encode($fields);
