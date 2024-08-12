@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Cart;
 
 class CheckoutController extends Controller
 {
@@ -20,13 +21,15 @@ class CheckoutController extends Controller
         $phone_number = $request->phone_number;
         $user_id  = $request->user_id;
 
+        //update user here
         $find_user = User::find($user_id);
-
         $find_user->address = $address;
         $find_user->phone_number = $phone_number;
         $find_user->save();
 
+        // delete cart items after payment
 
+        $get_cart = Cart::where('user_id',$user_id)->delete();
 
         $key = "Bearer sk_test_bd26d3bef795b1b0896128cc607ce244af635f69";
         $data_string = json_encode($fields);

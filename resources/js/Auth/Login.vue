@@ -6,12 +6,12 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-                <!-- <ul class="navbar-nav me-auto">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <router-link class="nav-link" :to="{name:'bookables'}">Home</router-link>
                     </li>
                     
-                </ul> -->
+                </ul>
                 <ul class="navbar-nav ms-auto">
                     <!-- <li class="nav-item">
                         <a class="nav-link" href="">Contact</a>
@@ -33,6 +33,7 @@
         <div class="card text-black" style="border-radius: 25px;position: relative;top:-25px">
           <div class="card-body p-md-5">
             <div class="row justify-content-center">
+              <h2 style="text-align: center;">Booking and Ecommerce App</h2>
               <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
 
                 <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Login</p>

@@ -11,6 +11,7 @@ import Cart from "./Shop/Cart.vue";
 import Checkout from "./Shop/Checkout.vue";
 
 
+
 const routes = [
     {
 
@@ -82,6 +83,8 @@ const routes = [
         name : "checkout"
 
     },
+
+
     
    
 ];
