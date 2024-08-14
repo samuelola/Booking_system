@@ -45,7 +45,7 @@
                 <span class="badge badge-secondary badge-pill">3</span>
             </h4>
             <ul class="list-group mb-3">
-                <li class="list-group-item d-flex justify-content-between lh-condensed" v-for="(basketlist,index) in basketlists">
+                <li class="list-group-item d-flex justify-content-between lh-condensed" v-for="basketlist in basketlists" :key="basketlist">
                 <div>
                     <h6 class="my-0">{{ basketlist.product.title }}</h6>
                     

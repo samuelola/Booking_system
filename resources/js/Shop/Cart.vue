@@ -28,11 +28,6 @@
                         
                     </li>
                      <li class="nav-item" style="margin-top: 10px;margin-right: 12px;" v-else>
-                       <!--
-                        <a href="#" style="text-decoration: none;">
-                           Cart <span class="badge text-bg-primary align-top mr-4">0</span>
-                       </a>
-                        -->
                        <router-link :to="{name : 'cart'}" style="text-decoration: none;">
                            Go to Cart <span class="badge text-bg-primary align-top mr-4">{{ cart_counter }}</span>
                        </router-link>
@@ -65,7 +60,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr  v-for="(basketlist,index) in basketlists">
+                                <tr  v-for="basketlist in basketlists" :key="basketlist">
                                     <td><img :src="basketlist.product.image" width="50" height="50"/> </td>
                                     <td>{{ basketlist.product.title }}</td>
                                     <td><input class="form-control" min="1" type="number"  v-model="basketlist.qty" /></td>
@@ -182,8 +177,6 @@ export default {
                              for (let i = 0; i < this.basketlists.length; i++){
                                  this.subtotal += this.basketlists[i].product.price * this.basketlists[i].qty;
                              }
-
-                            //  this.total = this.subtotal + this.shipping;
                              this.total = this.subtotal;
                              
                          })
@@ -209,10 +202,7 @@ export default {
 
         cent(name,price) {
             var tor = name * price;
-            //alert(tor);
-            
-
-            alert(tor);
+          
         },
         
         foo(fgf) {
