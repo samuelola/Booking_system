@@ -19,7 +19,7 @@ export default {
     },
     created() {
 
-        axios.get(`/api/user`, { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+        axios.get(`/api/user`, this.User.tokenBearer())
              .then((r) => {
                  this.formData.user_id = r.data.user_details.id;
                  
@@ -32,7 +32,7 @@ export default {
     methods: {
        
     addToCart() {
-            axios.post(`/api/cart`, this.formData, { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+            axios.post(`/api/cart`, this.formData, this.User.tokenBearer())
                 .then(response => {
                     this.basketCountValue = response.data.basket_count;
                     this.$emit('changeBasketCount', this.basketCountValue);  

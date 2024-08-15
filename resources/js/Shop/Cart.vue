@@ -132,9 +132,10 @@
 import UserInfo from "../shared/mixins/UserInfo";
 import NavCart from "../Nav/ShopNav.vue";
 import axios from "axios";
+import LogoutAction from "../shared/mixins/LogoutAction";
 
 export default {
-    mixins : [UserInfo],
+    mixins : [UserInfo,LogoutAction],
     components: {
         NavCart
     },
@@ -163,10 +164,8 @@ export default {
     },
 
     created() {
-        const headers = {
-            Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
-        axios.get(`/api/user`, {headers})
+        
+        axios.get(`/api/user`, this.User.tokenBearer())
              .then((r) => {
                  this.user_idd = r.data.user_details.id;
                  if (this.user_idd) {
@@ -182,7 +181,7 @@ export default {
                          })
                          .catch();
 
-                        axios.get(`/api/count-cart/${this.user_id}`, { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+                        axios.get(`/api/count-cart/${this.user_id}`, this.User.tokenBearer())
                         .then(response => {
                             this.cart_counter = response.data.basket_count;
                         })
@@ -266,7 +265,7 @@ export default {
                          })
                 .catch(); 
 
-                axios.get(`/api/count-cart/${user_id}`, { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+                axios.get(`/api/count-cart/${user_id}`, this.User.tokenBearer())
                         .then(response => {
                             this.cart_counter = response.data.basket_count;
                         })

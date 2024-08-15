@@ -61,7 +61,7 @@
                 <li class="list-group-item d-flex justify-content-between">
                 <span>Total (&#8358;)</span>
                 
-                <strong>&#8358;{{ total }}</strong>
+                <strong>&#8358;{{ dtotal ? $filters.formatPrice(dtotal) : '' }}</strong>
                 </li>
             </ul>
             </div>
@@ -108,19 +108,19 @@
                 </div>
 
                 <div class="mb-3">
-                <label for="address">Address</label>
-                <input type="text" class="form-control" id="address" placeholder="1234 Main St" required="" v-model="formData.address">
-                <div class="invalid-feedback">
-                    Please enter your shipping address.
-                </div>
+                <label for="address">Shipping Address</label>
+                <input type="text" class="form-control" id="address" placeholder="Address" required="" v-model="formData.address"
+                 :class="[{'is-invalid': this.errorFor('address')}]"
+                >
+                <validation-error :errors="errorFor('address')"></validation-error>
                 </div>
 
                 <div class="mb-3">
                 <label for="address">Phone Number </label>
-                <input type="phone" class="form-control" id="address" placeholder="Phone number" required="" v-model="formData.phone_number">
-                <div class="invalid-feedback">
-                    Please enter a phone number
-                </div>
+                <input type="phone" class="form-control" id="address" placeholder="Phone number" required="" v-model="formData.phone_number"
+                :class="[{'is-invalid': this.errorFor('phone_number')}]"
+                >
+                <validation-error :errors="errorFor('phone_number')"></validation-error>
                 </div>
 
                 
@@ -142,8 +142,12 @@
 <script>
 import axios from "axios";
 import NavCart from "../Nav/ShopNav.vue";
-export default {
+import LogoutAction from "../shared/mixins/LogoutAction";
+import { is404, is422, is500 } from '../shared/Utils/response';
+import validation_errorss from '../shared/mixins/ValidationErrors';
 
+export default {
+    mixins : [LogoutAction,validation_errorss],
     components: {
         NavCart
     },
@@ -164,24 +168,21 @@ export default {
             basketlists: null,
             shipping: null,
             subtotal: null,
-            total : null
+            total: null,
+            dtotal : null
           }
     },
 
     created() {
        
-          const headers = {
-              Authorization: 'Bearer ' + localStorage.getItem('token')   
-        }
-
-        axios.get(`/api/user`, { headers })
+        axios.get(`/api/user`, this.User.tokenBearer())
             .then((r) => {
                 this.formData.user_id = r.data.user_details.id;
                 this.formData.email = r.data.user_details.email;
                 this.formData.name = r.data.user_details.name;
                 this.newuser_id = r.data.user_details.id;
                 
-                axios.get(`/api/count-cart/${this.newuser_id}`, { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+                axios.get(`/api/count-cart/${this.newuser_id}`, this.User.tokenBearer())
                         .then(response => {
                             this.cart_counter = response.data.basket_count;
                             
@@ -197,7 +198,7 @@ export default {
                              }
 
                              this.total = this.subtotal;
-
+                             this.dtotal = this.subtotal;
                              
                          })
                          .catch();   
@@ -209,6 +210,7 @@ export default {
 
      methods: {
          checkout(tottal) {
+             this.errors = null;
              this.formData.amount = tottal;
              axios.post(`/api/checkout`,this.formData)
                  .then(response => {
@@ -219,7 +221,11 @@ export default {
                      }   
                      
                  })
-                 .catch();
+                 .catch((error) => {
+                      if (is422(error)) {
+                           this.errors = error.response.data.errors;
+                      }
+                 })
             
          },
          
@@ -228,9 +234,9 @@ export default {
     mounted() {
         //this.formData.reference = '' + Math.floor((Math.random() * 1000000000) + 1);
         // this.formData.amount = 20000;
-        this.formData.callback_url = "http://localhost:8000/api/payment-callback";
-        this.shipping = 6.95;
-        console.log(this.total);
+        this.formData.callback_url = this.User.isCallBackUrl();
+        this.shipping = this.User.isShipping();
+        //console.log(this.formData.callback_url);
         
     }
     

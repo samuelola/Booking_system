@@ -113,6 +113,7 @@ import ShopListItem from "./ShopListItem.vue";
 import Pagination from "../shared/mixins/Pagination";
 import LogoutAction from "../shared/mixins/LogoutAction";
 
+
 export default {
     mixins : [Pagination,LogoutAction],
     components: {
@@ -133,8 +134,8 @@ export default {
     },
 
     created() {
-
-        axios.get('/api/shops',{ headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+        //console.log(this.User.isValid());
+        axios.get('/api/shops',this.User.tokenBearer())
 
             .then(response => {
                 this.loading = 'true';
@@ -153,14 +154,12 @@ export default {
     },
 
     mounted() { 
-        const headers = {
-            Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
-        axios.get(`/api/user`, { headers }).then((r) => {
+        
+        axios.get(`/api/user`, this.User.tokenBearer()).then((r) => {
             this.user_id = r.data.user_details.id;
             if (this.user_id) {
 
-            axios.get(`/api/count-cart/${this.user_id}`, { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+            axios.get(`/api/count-cart/${this.user_id}`, this.User.tokenBearer())
             .then(response => {
                 this.cart_counter = response.data.basket_count;
             })

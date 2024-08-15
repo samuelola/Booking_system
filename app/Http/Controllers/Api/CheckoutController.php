@@ -10,6 +10,14 @@ use App\Models\Cart;
 class CheckoutController extends Controller
 {
     public function store(Request $request){
+
+        $data = $request->validate(
+            [
+              'address'=> 'required',
+              'phone_number' => 'required',
+            ]
+        );
+
         $url = "https://api.paystack.co/transaction/initialize";
         $fields = [
             'email' => $request->email,
@@ -17,8 +25,8 @@ class CheckoutController extends Controller
             'callback_url' => $request->callback_url
         ];
 
-        $address = $request->address;
-        $phone_number = $request->phone_number;
+        $address = $data['address'];
+        $phone_number = $data['phone_number'];
         $user_id  = $request->user_id;
 
         //update user here

@@ -21,7 +21,7 @@ export default {
     methods: {
         getUser() {
 
-            axios.get(`/api/user`, { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+            axios.get(`/api/user`, this.User.tokenBearer())
              .then((r) => {
                  this.user = r.data.user_details;
                  this.user_id = r.data.user_details.id

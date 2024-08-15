@@ -15,12 +15,12 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
-import User from './shared/helpers/User';
+import theUser from './shared/helpers/User';
+
 
 library.add(fas, far, fab)
 dom.watch();
 
-window.User = User;
 
 const app = createApp(index);
 
@@ -32,7 +32,11 @@ app.component('star-rating', StarRating)
   .component('validation-error', ValidationError)  
   .component("font-awesome-icon", FontAwesomeIcon)
 
-//this register a function globally for filters
+
+
+app.config.globalProperties.User = theUser
+
+
 app.config.globalProperties.$filters = {
   dateTime(value) {
     return moment(value).fromNow();
@@ -41,18 +45,23 @@ app.config.globalProperties.$filters = {
     return moment(value).format('MMMM Do YYYY');
   },
   formatPrice(num) {
-      // let val = (value / 1).toFixed(2).replace(',', '.')
+    // let val = (value / 1).toFixed(2).replace(',', '.')
     // return val.toString().replace('/\B(?=(\d{3})+(?!\d))',".");
     var str = num.toString().split('.');
     if (str[0].length >= 4) {
-        str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+      str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1,');
     }
     if (str[1] && str[1].length >= 4) {
-        str[1] = str[1].replace(/(\d{3})/g, '$1 ');
+      str[1] = str[1].replace(/(\d{3})/g, '$1 ');
     }
     return str.join('.');
-  }
+  },
+   
+   theUser() {
+    return User;
+    }
 }
+
 app.use(router)
 app.mount("#app");
 
