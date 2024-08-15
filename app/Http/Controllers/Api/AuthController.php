@@ -11,10 +11,17 @@ class AuthController extends Controller
 {
    public function register(Request $request)
     {
+        $data = $request->validate(
+            [
+              'name' => 'required',  
+              'email'=> 'required',
+              'password' => 'required',
+            ]
+        );
         $formData = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password,
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => $data['password'],
         ];
   
         $formData['password'] = bcrypt($request->password);
@@ -30,9 +37,15 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        $data = $request->validate(
+            [
+              'email'=> 'required',
+              'password' => 'required',
+            ]
+        );
         $credentials = [
-            'email'    => $request->email,
-            'password' => $request->password
+            'email'    => $data['email'],
+            'password' => $data['password']
         ];
   
         if (Auth::attempt($credentials)) 

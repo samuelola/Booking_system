@@ -92,7 +92,7 @@ export default {
         }
 
         //All bookables start here
-        axios.get('/api/bookables',{ headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+        axios.get('/api/bookables',this.User.tokenBearer())
 
             .then(response => {
                 this.loading = 'true';
@@ -139,7 +139,7 @@ export default {
 
       getUser() {
 
-            axios.get(`/api/user`, { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+            axios.get(`/api/user`, this.User.tokenBearer())
              .then((r) => {
                  this.user = r.data.user_details;
                  console.log(user);

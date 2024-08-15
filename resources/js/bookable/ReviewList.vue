@@ -55,7 +55,7 @@ export default {
     },
 
     created() {
-        axios.get(`/api/bookables/${this.bookableId}/reviews`,{ headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+        axios.get(`/api/bookables/${this.bookableId}/reviews`,this.User.tokenBearer())
             .then(response => {
                 this.loading = 'true';
                 this.reviews = response.data.data 

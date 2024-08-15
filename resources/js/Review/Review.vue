@@ -99,7 +99,7 @@ export default {
        this.review.uuid = this.$route.params.id;
        this.loading = true;
        try {
-          this.existingReview = (await axios.get(`/api/reviews/${this.review.uuid}`,{ headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })).data.data;
+          this.existingReview = (await axios.get(`/api/reviews/${this.review.uuid}`,this.User.tokenBearer())).data.data;
        } catch(err) {
            if (is404(err)) {
 

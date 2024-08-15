@@ -108,7 +108,7 @@ export default {
     created() {
        
         //All bookables start here
-        axios.get('/api/bookables',{ headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+        axios.get('/api/bookables',this.User.tokenBearer())
 
             .then(response => {
                 this.loading = 'true';
@@ -122,7 +122,7 @@ export default {
 
         searching() {
             this.error= false;
-            axios.get(`/api/search/${this.searcher}`,{ headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+            axios.get(`/api/search/${this.searcher}`,this.User.tokenBearer())
                 .then(response => {
                     this.searchResult = response.data.data;
                     console.log(this.searchResult);

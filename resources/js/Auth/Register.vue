@@ -42,9 +42,12 @@
                     <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                     <div data-mdb-input-init class="form-outline flex-fill mb-0">
                       <label class="form-label" for="form3Example1c">Your Name</label>  
-                      <input type="text" id="form3Example1c" class="form-control" :class="[{'is-invalid': this.errorFor('name')}]" v-model="formData.name" />
-                       <div class="invalid-feedback" v-for="(error,index) in this.errorFor('name')" :key="'name' + index">{{ error }}</div>
-                      
+                      <input type="text" id="form3Example1c" class="form-control" 
+                       v-model="formData.name" 
+                       :class="[{'is-invalid': this.errorFor('name')}]"
+                       />
+                       <!-- <div class="invalid-feedback" v-for="(error,index) in this.errorFor('name')" :key="'name' + index">{{ error }}</div> -->
+                       <validation-error :errors="errorFor('name')"></validation-error>
                     </div>
                   </div>
 
@@ -52,8 +55,10 @@
                     <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                     <div data-mdb-input-init class="form-outline flex-fill mb-0">
                       <label class="form-label" for="form3Example3c">Your Email</label>  
-                      <input type="email" id="form3Example3c" class="form-control" name="email" :class="[{'is-invalid': this.errorFor('email')}]" v-model="formData.email" />
-                      
+                      <input type="email" id="form3Example3c" class="form-control" name="email"  v-model="formData.email" 
+                      :class="[{'is-invalid': this.errorFor('email')}]"
+                      />
+                      <validation-error :errors="errorFor('email')"></validation-error>
                     </div>
                   </div>
 
@@ -61,8 +66,10 @@
                     <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                     <div data-mdb-input-init class="form-outline flex-fill mb-0">
                        <label class="form-label" for="form3Example4c">Password</label> 
-                      <input type="password" id="form3Example4c" class="form-control" name="password" :class="[{'is-invalid': this.errorFor('password')}]" v-model="formData.password" />
-                      
+                      <input type="password" id="form3Example4c" class="form-control" name="password" v-model="formData.password"
+                      :class="[{'is-invalid': this.errorFor('password')}]"
+                      />
+                      <validation-error :errors="errorFor('password')"></validation-error>
                     </div>
                   </div>
 
@@ -91,8 +98,10 @@
 </template>
 
 <script>
+import validation_errorss from '../shared/mixins/ValidationErrors';
+import { is404, is422, is500 } from '../shared/Utils/response';
 export default {
-
+    mixins : [validation_errorss],
     data() {
         return {
             formData:{
@@ -111,13 +120,15 @@ export default {
                     this.$router.push("/login")
                 })
                 .catch(error => {
-                    
+                    if (is422(error)) {
+                           this.errors = error.response.data.errors;
+                      }
                 });
             
         },
-        errorFor(field) {
-            return this.errors != null && this.errors[field] ? this.errors[field] : null;
-        }
+        // errorFor(field) {
+        //     return this.errors != null && this.errors[field] ? this.errors[field] : null;
+        // }
     }
 }
 </script>

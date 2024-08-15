@@ -43,8 +43,10 @@
                     <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                     <div data-mdb-input-init class="form-outline flex-fill mb-0">
                       <label class="form-label" for="form3Example3c">Your Email</label>
-                      <input type="email" id="form3Example3c" class="form-control" name="email" v-model="formData.email" />
-                      
+                      <input type="email" id="form3Example3c" class="form-control" name="email" v-model="formData.email" 
+                      :class="[{'is-invalid': this.errorFor('email')}]"
+                      />
+                      <validation-error :errors="errorFor('email')"></validation-error>
                     </div>
                   </div>
 
@@ -52,8 +54,10 @@
                     <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                     <div data-mdb-input-init class="form-outline flex-fill mb-0">
                       <label class="form-label" for="form3Example4c">Password</label>
-                      <input type="password" id="form3Example4c" class="form-control" name="password" v-model="formData.password" />
-                      
+                      <input type="password" id="form3Example4c" class="form-control" name="password" v-model="formData.password" 
+                      :class="[{'is-invalid': this.errorFor('password')}]"
+                      />
+                      <validation-error :errors="errorFor('password')"></validation-error>
                     </div>
                   </div>
 
@@ -83,9 +87,11 @@
 </template>
 
 <script>
-import axios from 'axios';
-
+//import axios from 'axios';
+import validation_errorss from '../shared/mixins/ValidationErrors';
+import { is404, is422, is500 } from '../shared/Utils/response';
 export default {
+    mixins : [validation_errorss],
     data() {
 
         return {
@@ -111,13 +117,17 @@ export default {
             axios.post(`/api/login`, this.formData)
                 .then(response => {
 
-                    if (response.status === 200) {
-                        localStorage.setItem('token', response.data.token);
+                  if (response.status === 200) {
+                        this.User.setToken(response.data.token)
+                        //localStorage.setItem('token', response.data.token);
                         this.$router.push('/');
                         //console.log(response.data.user);
                      }
                 })
-                .catch(error => {
+              .catch(error => {
+                    if (is422(error)) {
+                           this.errors = error.response.data.errors;
+                      }
                     this.isSubmitting = false;
                 });
         }
