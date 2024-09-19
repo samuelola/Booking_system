@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\NewPaymentController;
 use App\Http\Controllers\Api\CountCartController;
+use App\Http\Controllers\Api\BookablePriceController;
 
 
 // Route::get('/user', function (Request $request) {
@@ -53,5 +54,7 @@ Route::get('bookables/{bookable}/reviews',BookableReviewController::class)
 ->name('bookables.reviews.index')->name('booking.by-review.show');
 Route::get('booking-by-review/{reviewKey}',BookingByReviewController::class);
 Route::get('booking-by/{id}',BookingByIdReviewController::class);
+
+Route::get('bookables/{bookable}/price',BookablePriceController::class)->name('bookables.price.show');
 
 

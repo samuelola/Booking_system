@@ -69,7 +69,7 @@ export default {
         axios.get(`/api/booking-by/${this.bookableId}`)
             .then(response => {
                 this.review_key = response.data.data.review
-                console.log(this.review_key);
+                //console.log(this.review_key);
             })
             .catch(error => {
 

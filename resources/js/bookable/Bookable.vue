@@ -19,7 +19,20 @@
             <ReviewList :bookable-id="this.$route.params.id"></ReviewList>
          </div>
          <div class="col-md-4 pd-4">
-            <Availability :bookable-id="this.$route.params.id"></Availability>
+            <!-- <Availability :bookable-id="this.$route.params.id" v-on:availability="checkPrice($event)"></Availability> -->
+            <Availability 
+            :bookable-id="this.$route.params.id" 
+            @availability="checkPrice($event)" 
+            class="mb-4">
+            </Availability>
+            <transition name="fade">
+                <PriceBreakdown v-if="price" :price="price"></PriceBreakdown>
+            </transition>
+            
+            <transition name="fade">
+                  <button class="btn btn-outline-secondary btn-block w-100" v-if="price">Book Now</button>
+            </transition>
+            
          </div>
     </div>
     </div>
@@ -28,17 +41,22 @@
 <script>
 import Availability from "./Availability.vue";
 import ReviewList from "./ReviewList.vue";
+import PriceBreakdown from "./PriceBreakdown.vue";
 import Navigation from "../Nav/Nav.vue";
+import { mapState } from 'vuex';
+
 export default {
     components: {
         Availability,
         ReviewList,
-        Navigation
+        Navigation,
+        PriceBreakdown
      },
      data() {
         return {
             bookable: null,
-            loading: false
+            loading: false,
+            price:null
         };
     },
 
@@ -51,6 +69,31 @@ export default {
                 
             });
     },
+
+    // computed: mapState({
+
+    //     lastSearchh: "lastSearch"
+
+    // }),
+    computed: {
+         ...mapState({
+           lastSearchh : "lastSearch"
+        })
+    },
+    methods:{
+        async checkPrice(hasAvailabilityy) {
+            console.log(this.lastSearchh);
+            if (!hasAvailabilityy) {
+                this.price = null;
+                return;
+            }
+            try {
+                this.price = (await axios.get(`/api/bookables/${this.bookable.id}/price?from=${this.lastSearchh.from}&to=${this.lastSearchh.to}`)).data.data
+            } catch (error) {
+                this.price = null;
+            }
+       }
+    }
 
    
 }

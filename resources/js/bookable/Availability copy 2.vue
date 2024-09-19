@@ -55,7 +55,7 @@ export default {
     },
 
     methods: {
-       async check() {
+        check() {
             this.loading = true;
             this.errors = null;
             this.$store.dispatch('setLastSearch',{
@@ -63,20 +63,17 @@ export default {
                 to : this.to
             })
             //console.log(this.$store.state.lastSearch)
-            try {
-                this.status = (await axios.get(
-                    `/api/bookables/${this.bookableId}/availability?from=${this.from}&to=${this.to}`
-                )).status 
-                this.$emit("availability",this.hasAvailability)
-            } catch (error) {
-               if (is422(error)) {
-                   this.errors = error.response.data.errors;
-                }
-                this.status = error.response.status;
-                this.$emit("availability", this.hasAvailability) 
-            }
-            this.loading = false;
-            
+            axios.get(`/api/bookables/${this.bookableId}/availability?from=${this.from}&to=${this.to}`)
+                .then(response => {
+                    this.status = response.status
+                })
+                .catch(error => {
+                    if (is422(error)) {
+                        this.errors = error.response.data.errors;
+                    }
+                    this.status = error.response.status;
+                })
+                .then(() => (this.loading = false));
         },
 
         // errorFor(field) {
@@ -122,12 +119,12 @@ export default {
 
  
 
-.fade-enter-active, .fade-leave-active{
+.v-enter-active, .v-leave-active{
     transition: opacity 0.5;
 }
 
-.fade-enter,
-.fade-leave-to {
+.v-enter,
+.v-leave-to {
     opacity: 0;
 }
 

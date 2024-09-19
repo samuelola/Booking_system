@@ -52,7 +52,6 @@ class UserFactory extends Factory
             'name' => 'Tester User',
             'email' => 'admin@gmail.com',
             'email_verified_at' => now(),
-            //'password' => static::$password ??= Hash::make('password'),
             'password' => Hash::make('1234567'),
             'remember_token' => Str::random(10),
             'role'=> UserStatus::ADMIN->value

@@ -22,11 +22,11 @@ export default{
             "description": String,
             "price": Number,
             "id": Number,
-        "uuid": String,
-    },
-    components: {
-        AddToCart
-    },
+            "uuid": String,
+        },
+        components: {
+            AddToCart
+        },
 
     data() {
         return {

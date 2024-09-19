@@ -14,7 +14,6 @@ import Checkout from "./Shop/Checkout.vue";
 
 const routes = [
     {
-
         path: "/",
         component: () => import("./bookables/Bookables.vue"), //this section Implementing Lazy Loading for Improved Performance
         name : "bookables"
@@ -84,9 +83,6 @@ const routes = [
 
     },
 
-
-    
-   
 ];
 
 const router = createRouter({

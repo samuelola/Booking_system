@@ -1,4 +1,8 @@
 //when you use export this is publicly available for use
+export const is401 = function (err) {
+    return err.response && err.response.status == 401;
+}
+
 export const is404 = function (err) {
     return err.response && err.response.status == 404;
 }

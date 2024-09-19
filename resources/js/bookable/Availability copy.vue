@@ -1,10 +1,8 @@
 <template>
     <div>
       <h6 class="text-uppercase text-secondary font-weight-bolder">Check Availability
-        <transition>
-            <span v-if="noAvailability" class="text-danger">(NOT AVAILABLE)</span>
-            <span v-if="hasAvailability" class="text-success">(AVAILABLE)</span>  
-        </transition>
+        <span v-if="noAvailability" class="text-danger">(NOT AVAILABLE)</span>
+        <span v-if="hasAvailability" class="text-success">(AVAILABLE)</span>
       </h6>
       <div class="form-row">
          <div class="form-group col-md-6">
@@ -29,10 +27,7 @@
            
          </div>
       </div>
-      <button class="btn btn-secondary mt-2 w-100" @click="check" :disabled="loading">
-       <span v-if="!loading">Check</span> 
-       <span v-if="loading"><i class="fas fa-circle-notch fa-spin"></i> Checking...</span>
-    </button>
+      <button class="btn btn-secondary mt-2 w-100" @click="check" :disabled="loading">Check</button>
     </div>
 </template>
 
@@ -55,28 +50,27 @@ export default {
     },
 
     methods: {
-       async check() {
+        check() {
             this.loading = true;
             this.errors = null;
-            this.$store.dispatch('setLastSearch',{
+            this.$store.commit('setLastSearch',{
                 from: this.from,
                 to : this.to
             })
-            //console.log(this.$store.state.lastSearch)
-            try {
-                this.status = (await axios.get(
-                    `/api/bookables/${this.bookableId}/availability?from=${this.from}&to=${this.to}`
-                )).status 
-                this.$emit("availability",this.hasAvailability)
-            } catch (error) {
-               if (is422(error)) {
-                   this.errors = error.response.data.errors;
-                }
-                this.status = error.response.status;
-                this.$emit("availability", this.hasAvailability) 
-            }
-            this.loading = false;
-            
+
+            console.log(this.$store.state.lastSearch)
+            axios.get(`/api/bookables/${this.bookableId}/availability?from=${this.from}&to=${this.to}`)
+                .then(response => {
+                    this.status = response.status
+                })
+                .catch(error => {
+                    if (is422(error)) {
+                        this.errors = error.response.data.errors;
+                    }
+
+                    this.status = error.response.status;
+                })
+                .then(() => (this.loading = false));
         },
 
         // errorFor(field) {
@@ -95,9 +89,7 @@ export default {
         noAvailability() {
             return 404 == this.status;
         }
-    },
-    
-    
+    }
 }
 
 </script>
@@ -119,19 +111,6 @@ export default {
      .invalid-feedback{
         color: #b22222;
      }
-
- 
-
-.fade-enter-active, .fade-leave-active{
-    transition: opacity 0.5;
-}
-
-.fade-enter,
-.fade-leave-to {
-    opacity: 0;
-}
-
-
 </style>
 
 

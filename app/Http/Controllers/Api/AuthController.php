@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Auth;
+use App\Http\Requests\LoginRequest;
 
 class AuthController extends Controller
 {
@@ -35,14 +36,9 @@ class AuthController extends Controller
           
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $data = $request->validate(
-            [
-              'email'=> 'required',
-              'password' => 'required',
-            ]
-        );
+        $data = $request->validated();
         $credentials = [
             'email'    => $data['email'],
             'password' => $data['password']
@@ -59,7 +55,7 @@ class AuthController extends Controller
         }
   
         return response()->json([
-            'error' => 'Unauthorised'
+            'error_message' => 'Unauthorised, Wrong Email or Password'
         ], 401);
   
     }

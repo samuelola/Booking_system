@@ -113,9 +113,17 @@ export default {
             .then(response => {
                 this.loading = 'true';
                 this.bookables = response.data.data;
-            
+                //  setTimeout(function () {
+                //         localStorage.setItem('token', '');
+                //         this.$router.push('/login');
+                // },300);
             });
 
+
+        // axios.get('https://ecommerce.styletisfy.com/api/categories')
+        //     .then(response => {
+        //         console.log(response.data.data)
+        //     });
     },
     
     methods: {
@@ -125,7 +133,7 @@ export default {
             axios.get(`/api/search/${this.searcher}`,this.User.tokenBearer())
                 .then(response => {
                     this.searchResult = response.data.data;
-                    console.log(this.searchResult);
+                    //console.log(this.searchResult);
                 })
                 .catch(error => {
                     if (is404(error)) {

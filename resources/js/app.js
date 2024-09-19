@@ -16,10 +16,11 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import theUser from './shared/helpers/User';
-
-
+import storeDefinition from './store';
 library.add(fas, far, fab)
 dom.watch();
+
+
 
 
 const app = createApp(index);
@@ -31,8 +32,6 @@ app.component('star-rating', StarRating)
   .component('error', Error)
   .component('validation-error', ValidationError)  
   .component("font-awesome-icon", FontAwesomeIcon)
-
-
 
 app.config.globalProperties.User = theUser
 
@@ -62,6 +61,10 @@ app.config.globalProperties.$filters = {
     }
 }
 
+
+
+//app.use(store)
+app.use(storeDefinition)
 app.use(router)
 app.mount("#app");
 

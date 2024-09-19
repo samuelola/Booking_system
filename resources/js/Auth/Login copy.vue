@@ -107,7 +107,6 @@ export default {
             },
           isSubmitting: false,
           error_m: null,
-          statuss : null
         }
         
     },
@@ -119,27 +118,33 @@ export default {
     },
 
     methods: {
-      async login() {
+       login() {
+
             this.isSubmitting = true;
-            try {
-              this.statuss = (await axios.post(`/api/login`, this.formData));
-              if (this.statuss.status === 200) {
-                this.User.setToken(this.statuss.data.token)
-                this.$router.push('/');
-                console.log(this.statuss.data.token);
-              }
-            }
-            catch (error) {
-                if (is422(error)) {
-                    this.errors = error.response.data.errors;
-                }
-                if (is401(error)) {
-                  this.error_m = error.response.data.error_message
-                  console.log(this.error_m);
-                }
-                this.isSubmitting = false;
-            }
-           
+            axios.post(`/api/login`, this.formData)
+                .then(response => {
+
+                  if (response.status === 200) {
+                        this.User.setToken(response.data.token)
+                        //localStorage.setItem('token', response.data.token);
+                        this.$router.push('/');
+                       
+                    //console.log(response.data.user);
+                    //set timeout
+                    
+                     
+                     }
+                })
+                .catch(error => {
+                    if (is422(error)) {
+                        this.errors = error.response.data.errors;
+                    }
+                    if (is401(error)) {
+                      this.error_m = error.response.data.error_message
+                      console.log(this.error_m);
+                    }
+                    this.isSubmitting = false;
+                });
         }
     }
        

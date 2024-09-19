@@ -24,6 +24,7 @@
         "moment": "^2.30.1",
         "vue": "^3.4.35",
         "vue-paystack": "^2.0.4",
-        "vue-router": "^4.4.0"
+        "vue-router": "^4.4.0",
+        "vuex": "^4.1.0"
     }
 }
